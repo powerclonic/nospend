@@ -26,6 +26,8 @@ return new class extends Migration
             $table->boolean('recurrent')->default(false);
             $table->boolean('auto_pay')->default(false);
 
+            $table->foreignId('user_id')->constrained('users');
+
             $table->timestamps();
         });
     }

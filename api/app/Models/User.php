@@ -4,12 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -45,8 +48,21 @@ class User extends Authenticatable
         ];
     }
 
-    public function expenses()
+    public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class);
+    }
+
+    public function expensesMonth(int $month, int $year): HasMany
+    {
+        return $this->expenses()
+            ->whereMonth('due_date', $month)
+            ->whereYear('due_date', $year);
+    }
+
+    public function expensesToday(): HasMany
+    {
+        return $this->expenses()
+            ->whereDate('due_date', now());
     }
 }
