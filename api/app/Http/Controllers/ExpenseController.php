@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Expense\StoreRequest;
+use App\Http\Resources\DashboardResource;
 use App\Models\Expense;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,6 +15,11 @@ class ExpenseController extends Controller
      */
     public function index(Request $request)
     {
+        return new DashboardResource(
+            $request->user()
+                ->with('expenses')
+                ->first()
+        );
     }
 
     /**
