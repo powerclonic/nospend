@@ -35,7 +35,8 @@ class Expense extends Model
     {
         return [
             'status' => Status::class,
-            'value' => Money::class
+            'value' => Money::class,
+            'due_date' => 'datetime'
         ];
     }
 

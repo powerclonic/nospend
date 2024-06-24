@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Expense\ListRequest;
 use App\Http\Requests\Expense\StoreRequest;
 use App\Http\Resources\DashboardResource;
+use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,13 +15,19 @@ class ExpenseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ListRequest $request)
     {
-        return new DashboardResource(
-            $request->user()
-                ->with('expenses')
-                ->first()
-        );
+        if ($request->validated()) {
+            return ExpenseResource::collection(
+                $request->user()->expensesMonth(...$request->validated())->get()
+            );
+        } else {
+            return new DashboardResource(
+                $request->user()
+                    ->with('expenses')
+                    ->first()
+            );
+        }
     }
 
     /**

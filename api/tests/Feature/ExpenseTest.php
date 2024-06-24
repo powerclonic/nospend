@@ -7,7 +7,6 @@ use App\Models\Expense;
 use App\Models\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -63,10 +62,10 @@ class ExpenseTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_returns_the_correct_dashboard_data_structure(): void
+    public function test_list_returns_the_correct_dashboard_data_structure_when_no_parameters_are_sent(): void
     {
         Sanctum::actingAs(
-            $user = User::factory()
+            User::factory()
                 ->hasExpenses(2, [
                     'due_date' => today()->subDay()
                 ])
@@ -85,8 +84,7 @@ class ExpenseTest extends TestCase
             uri: '/api/expenses'
         );
 
-        $response->dump();
-
+        $response->assertStatus(200);
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json->whereAllType([
@@ -97,6 +95,58 @@ class ExpenseTest extends TestCase
                 'data.month_statistics.expenses_total_paid' => 'integer|double',
                 'data.month_statistics.expenses_total_unpaid' => 'integer|double',
                 'data.month_statistics.expenses_total_not_recurrent' => 'integer|double',
+            ])
+        );
+    }
+
+    public function test_list_fails_when_only_one_parameter_is_passed(): void
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->create()
+        );
+
+        $response = $this->getJson(
+            uri: '/api/expenses?year=2024'
+        );
+
+        $response->assertStatus(422);
+    }
+
+    public function test_list_returns_the_correct_listing_when_all_parameters_are_sent(): void
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->hasExpenses(3, [
+                    'due_date' => today()
+                ])
+                ->create()
+        );
+
+        $response = $this->call(
+            method: 'GET',
+            uri: '/api/expenses',
+            parameters: [
+                'year' => 2024,
+                'month' => 6
+            ]
+        );
+
+        $response->dump();
+
+        $response->assertStatus(200);
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json->whereAllType([
+                'data.0.id' => 'integer',
+                'data.0.name' => 'string',
+                'data.0.value' => 'double',
+                'data.0.due_date' => 'string',
+                'data.0.payment_method' => 'string|null',
+                'data.0.payment_source' => 'string|null',
+                'data.0.created_at' => 'string',
+                'data.0.recurrent' => 'boolean',
+                'data.0.category' => 'string|null'
             ])
         );
     }
