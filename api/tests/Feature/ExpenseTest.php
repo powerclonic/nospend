@@ -192,4 +192,58 @@ class ExpenseTest extends TestCase
             ])
         );
     }
+
+    public function test_update_fails_to_update_when_an_invalid_request_is_sent()
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->hasExpenses(1)
+                ->create()
+        );
+
+        $response = $this->putJson(
+            uri: '/api/expenses/1'
+        );
+
+        $response->assertStatus(422);
+    }
+
+    public function test_update_fails_to_update_when_an_invalid_expense_is_sent()
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->hasExpenses(1)
+                ->create()
+        );
+
+        $response = $this->putJson(
+            uri: '/api/expenses/1',
+            data: [
+                'id' => 2
+            ]
+        );
+
+        $response->assertStatus(422);
+    }
+
+    public function test_update_returns_the_correct_message_and_status_and_updates_the_model_when_a_valid_request_is_sent()
+    {
+        Sanctum::actingAs(
+            $user = User::factory()
+                ->hasExpenses(1)
+                ->create()
+        );
+
+        $response = $this->putJson(
+            uri: '/api/expenses/1',
+            data: [
+                'id' => 1,
+                'name' => 'test'
+            ]
+        );
+
+        $response->assertSuccessful();
+        $response->assertSeeText('Expense updated successfully');
+        $this->assertEquals('test', $user->expenses()->first()->name);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Expense\ListRequest;
 use App\Http\Requests\Expense\StoreRequest;
+use App\Http\Requests\Expense\UpdateRequest;
 use App\Http\Resources\DashboardResource;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
@@ -37,7 +38,7 @@ class ExpenseController extends Controller
     {
         $request->user()->expenses()->create($request->validated());
 
-        return response(__('expense.created'), 201);
+        return response(__('app.expense.created'), 201);
     }
 
     /**
@@ -51,9 +52,11 @@ class ExpenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Expense $expense)
+    public function update(UpdateRequest $request, Expense $expense)
     {
-        //
+        $expense->update($request->validated());
+
+        return response(__('app.expense.updated'), 200);
     }
 
     /**
