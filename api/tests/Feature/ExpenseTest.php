@@ -164,6 +164,24 @@ class ExpenseTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function test_show_returns_forbidden_when_another_user_try_to_access_the_expense(): void
+    {
+        User::factory()
+            ->hasExpenses(1)
+            ->create();
+
+        Sanctum::actingAs(
+            User::factory()
+                ->create()
+        );
+
+        $response = $this->getJson(
+            uri: '/api/expenses/1'
+        );
+
+        $response->assertStatus(403);
+    }
+
     public function test_show_returns_the_correct_data_when_a_valid_expense_is_sent(): void
     {
         Sanctum::actingAs(
@@ -208,6 +226,24 @@ class ExpenseTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function test_update_returns_forbidden_when_another_user_try_to_access_the_expense(): void
+    {
+        User::factory()
+            ->hasExpenses(1)
+            ->create();
+
+        Sanctum::actingAs(
+            User::factory()
+                ->create()
+        );
+
+        $response = $this->putJson(
+            uri: '/api/expenses/1'
+        );
+
+        $response->assertStatus(403);
+    }
+
     public function test_update_returns_the_correct_message_and_status_and_updates_the_model_when_a_valid_request_is_sent(): void
     {
         Sanctum::actingAs(
@@ -241,6 +277,24 @@ class ExpenseTest extends TestCase
         );
 
         $response->assertNotFound();
+    }
+
+    public function test_delete_returns_forbidden_when_another_user_try_to_access_the_expense(): void
+    {
+        User::factory()
+            ->hasExpenses(1)
+            ->create();
+
+        Sanctum::actingAs(
+            User::factory()
+                ->create()
+        );
+
+        $response = $this->putJson(
+            uri: '/api/expenses/1'
+        );
+
+        $response->assertStatus(403);
     }
 
     public function test_delete_returns_the_correct_message_and_status_and_deletes_the_model_when_a_valid_request_is_sent(): void

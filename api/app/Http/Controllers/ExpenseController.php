@@ -10,6 +10,7 @@ use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
 {
@@ -46,6 +47,8 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
+        Gate::authorize('view', $expense);
+
         return new ExpenseResource($expense);
     }
 
@@ -54,6 +57,8 @@ class ExpenseController extends Controller
      */
     public function update(UpdateRequest $request, Expense $expense)
     {
+        Gate::authorize('update', $expense);
+
         $expense->update($request->validated());
 
         return response(__('app.expense.updated'), 200);
@@ -64,6 +69,8 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
+        Gate::authorize('delete', $expense);
+
         $expense->delete();
 
         return response(__('app.expense.deleted'), 200);
