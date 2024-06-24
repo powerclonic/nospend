@@ -149,7 +149,7 @@ class ExpenseTest extends TestCase
         );
     }
 
-    public function test_show_returns_not_found_when_a_invalid_expense_is_sent()
+    public function test_show_returns_not_found_when_an_invalid_expense_is_sent(): void
     {
         Sanctum::actingAs(
             User::factory()
@@ -164,7 +164,7 @@ class ExpenseTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_show_returns_the_correct_data_when_a_valid_expense_is_sent()
+    public function test_show_returns_the_correct_data_when_a_valid_expense_is_sent(): void
     {
         Sanctum::actingAs(
             User::factory()
@@ -193,7 +193,7 @@ class ExpenseTest extends TestCase
         );
     }
 
-    public function test_update_fails_to_update_when_an_invalid_expense_is_sent()
+    public function test_update_fails_to_update_when_an_invalid_expense_is_sent(): void
     {
         Sanctum::actingAs(
             User::factory()
@@ -208,7 +208,7 @@ class ExpenseTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_update_returns_the_correct_message_and_status_and_updates_the_model_when_a_valid_request_is_sent()
+    public function test_update_returns_the_correct_message_and_status_and_updates_the_model_when_a_valid_request_is_sent(): void
     {
         Sanctum::actingAs(
             $user = User::factory()
@@ -228,7 +228,7 @@ class ExpenseTest extends TestCase
         $this->assertEquals('test', $user->expenses()->first()->name);
     }
 
-    public function test_delete_fails_to_delete_when_an_invalid()
+    public function test_delete_fails_to_delete_when_an_invalid(): void
     {
         Sanctum::actingAs(
             User::factory()
@@ -243,7 +243,7 @@ class ExpenseTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_delete_returns_the_correct_message_and_status_and_deletes_the_model_when_a_valid_request_is_sent()
+    public function test_delete_returns_the_correct_message_and_status_and_deletes_the_model_when_a_valid_request_is_sent(): void
     {
         Sanctum::actingAs(
             $user = User::factory()
