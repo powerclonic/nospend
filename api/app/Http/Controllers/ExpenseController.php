@@ -64,6 +64,8 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        //
+        $expense->delete();
+
+        return response(__('app.expense.deleted'), 200);
     }
 }

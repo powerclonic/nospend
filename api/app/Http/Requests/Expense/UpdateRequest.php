@@ -22,8 +22,6 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['bail', 'required', 'exists:expenses,id'],
-
             'name' => ['string', 'min:2', 'max:64'],
             'value' => ['integer'],
 
