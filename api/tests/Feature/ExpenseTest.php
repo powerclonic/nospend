@@ -132,8 +132,6 @@ class ExpenseTest extends TestCase
             ]
         );
 
-        $response->dump();
-
         $response->assertStatus(200);
         $response->assertJson(
             fn (AssertableJson $json) =>
@@ -147,6 +145,50 @@ class ExpenseTest extends TestCase
                 'data.0.created_at' => 'string',
                 'data.0.recurrent' => 'boolean',
                 'data.0.category' => 'string|null'
+            ])
+        );
+    }
+
+    public function test_show_returns_not_found_when_a_invalid_expense_is_sent()
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->hasExpenses(1)
+                ->create()
+        );
+
+        $response = $this->get(
+            uri: '/api/expenses/2'
+        );
+
+        $response->assertStatus(404);
+    }
+
+    public function test_show_returns_the_correct_data_when_a_valid_expense_is_sent()
+    {
+        Sanctum::actingAs(
+            User::factory()
+                ->hasExpenses(1)
+                ->create()
+        );
+
+        $response = $this->get(
+            uri: '/api/expenses/1'
+        );
+
+        $response->assertStatus(200);
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json->whereAllType([
+                'data.id' => 'integer',
+                'data.name' => 'string',
+                'data.value' => 'double',
+                'data.due_date' => 'string',
+                'data.payment_method' => 'string|null',
+                'data.payment_source' => 'string|null',
+                'data.created_at' => 'string',
+                'data.recurrent' => 'boolean',
+                'data.category' => 'string|null'
             ])
         );
     }

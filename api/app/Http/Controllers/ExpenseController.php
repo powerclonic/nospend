@@ -45,7 +45,7 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
-        //
+        return new ExpenseResource($expense);
     }
 
     /**
