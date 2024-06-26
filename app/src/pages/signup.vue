@@ -1,13 +1,8 @@
 <template>
-  <app-loading />
-  <app-welcome />
+  <sign-up-form />
 </template>
 
 <route lang="yaml">
 meta:
   layout: guest
 </route>
-
-<script lang="ts" setup>
-//
-</script>

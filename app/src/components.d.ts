@@ -12,7 +12,10 @@ declare module 'vue' {
     AppLoading: typeof import('./components/AppLoading.vue')['default']
     AppWelcome: typeof import('./components/AppWelcome.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    LoginForm: typeof import('./components/LoginForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SignInForm: typeof import('./components/SignInForm.vue')['default']
+    SignUpForm: typeof import('./components/SignUpForm.vue')['default']
   }
 }
