@@ -1,0 +1,3 @@
+<template>
+  <app-home />
+</template>
