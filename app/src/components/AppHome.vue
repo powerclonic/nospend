@@ -17,8 +17,12 @@
         :expense="value"
       />
     </v-container>
-    <home-button title="Todas as despesas" icon="mdi-chevron-right" />
-    <home-button title="Nova despesa" icon="mdi-plus" />
+    <card-button
+      title="Todas as despesas"
+      icon="mdi-chevron-right"
+      @click="$router.push('/expenses')"
+    />
+    <card-button title="Nova despesa" icon="mdi-plus" />
     <v-container
       class="bg-accent rounded-lg pa-2 d-flex flex-column flex-wrap ga-2"
     >

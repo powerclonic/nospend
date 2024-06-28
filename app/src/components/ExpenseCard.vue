@@ -11,11 +11,11 @@
     </template>
     <template #text v-if="detailed">
       <span class="d-flex flex-wrap ga-2">
-        <v-chip prepend-icon="mdi-circle" color="warning">
-          {{ status }}
+        <v-chip prepend-icon="mdi-circle" :color="status.color">
+          {{ status.text }}
         </v-chip>
         <v-chip prepend-icon="mdi-calendar" color="secondary">
-          {{ expense.due_date }}
+          {{ maskedDueDate }}
         </v-chip>
         <v-chip prepend-icon="mdi-repeat" color="secondary">
           {{ expense.recurrent ? "Sim" : "Não" }}
@@ -60,6 +60,14 @@ const formatter = new Intl.NumberFormat("pt-BR", {
 });
 
 const maskedValue = computed(() => formatter.format(props.expense.value));
+
+const maskedDueDate = computed(() =>
+  new Date(props.expense.due_date).toLocaleDateString("pt-BR")
+);
+
+const maskedCreatedDate = computed(() =>
+  new Date(props.expense.created_at).toLocaleDateString("pt-BR")
+);
 
 const statusList = {
   PAID: {
