@@ -1,7 +1,9 @@
 <template>
   <v-container class="d-flex flex-column ga-2">
     <month-picker />
-    <card-button title="Nova despesa" icon="mdi-plus" />
+    <card-button title="Nova despesa" icon="mdi-plus">
+      <new-expense />
+    </card-button>
     <v-card class="rounded-lg" color="accent">
       <template #title> Despesas do mês </template>
       <template #append>

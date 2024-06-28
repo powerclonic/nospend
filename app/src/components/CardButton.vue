@@ -4,6 +4,7 @@
     <template #append>
       <v-icon :icon="icon" color="primary" />
     </template>
+    <slot />
   </v-card>
 </template>
 

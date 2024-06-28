@@ -21,6 +21,7 @@ declare module 'vue' {
     HomeButton: typeof import('./components/HomeButton.vue')['default']
     LoginForm: typeof import('./components/LoginForm.vue')['default']
     MonthPicker: typeof import('./components/MonthPicker.vue')['default']
+    NewExpense: typeof import('./components/NewExpense.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SignInForm: typeof import('./components/SignInForm.vue')['default']

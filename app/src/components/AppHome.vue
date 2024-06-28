@@ -22,7 +22,9 @@
       icon="mdi-chevron-right"
       @click="$router.push('/expenses')"
     />
-    <card-button title="Nova despesa" icon="mdi-plus" />
+    <card-button title="Nova despesa" icon="mdi-plus">
+      <new-expense />
+    </card-button>
     <v-container
       class="bg-accent rounded-lg pa-2 d-flex flex-column flex-wrap ga-2"
     >
