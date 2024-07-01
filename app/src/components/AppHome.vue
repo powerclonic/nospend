@@ -80,6 +80,7 @@ const data: Dashboard = {
       created_at: "2024-06-10",
       recurrent: true,
       auto_pay: true,
+      payment_source: "Sicredi",
     },
     {
       id: 1,

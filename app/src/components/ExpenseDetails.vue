@@ -38,10 +38,17 @@
       </template>
       <template #actions>
         <v-btn icon="mdi-cash" variant="tonal" color="primary" size="large" />
-        <v-btn icon="mdi-pencil" variant="tonal" color="warning" size="large" />
+        <v-btn
+          icon="mdi-pencil"
+          variant="tonal"
+          color="warning"
+          size="large"
+          ref="editButton"
+        />
         <v-btn icon="mdi-delete" variant="tonal" color="error" size="large" />
       </template>
     </v-card>
+    <new-expense update :expense :activator="editButton" />
   </v-dialog>
 </template>
 
@@ -50,6 +57,7 @@ import { Expense } from "@/types";
 import { PropType } from "vue";
 
 const showDialog = ref(false);
+const editButton = ref();
 
 const props = defineProps({
   expense: {

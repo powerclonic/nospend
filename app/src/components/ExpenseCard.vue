@@ -66,10 +66,6 @@ const maskedDueDate = computed(() =>
   new Date(props.expense.due_date).toLocaleDateString("pt-BR")
 );
 
-const maskedCreatedDate = computed(() =>
-  new Date(props.expense.created_at).toLocaleDateString("pt-BR")
-);
-
 const statusList = {
   PAID: {
     color: "succcess",
