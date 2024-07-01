@@ -37,7 +37,13 @@
         </div>
       </template>
       <template #actions>
-        <v-btn icon="mdi-cash" variant="tonal" color="primary" size="large" />
+        <v-btn
+          icon="mdi-cash"
+          variant="tonal"
+          color="primary"
+          size="large"
+          :disabled="expense.status === 'PAID'"
+        />
         <v-btn
           icon="mdi-pencil"
           variant="tonal"
