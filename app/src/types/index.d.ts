@@ -8,6 +8,7 @@ export interface Expense {
   payment_source?: string;
   created_at: string;
   recurrent: Boolean;
+  auto_pay: Boolean;
   category?: string;
 }
 

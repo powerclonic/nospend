@@ -1,5 +1,6 @@
 <template>
   <v-card color="background">
+    <expense-details :expense />
     <template #title>
       <span class="text-light">{{ expense.name }}</span>
     </template>
