@@ -19,7 +19,7 @@ class DashboardResource extends JsonResource
 
         return [
             'name' => explode(' ', $this->name)[0],
-            'today_expenses' => $this->expensesToday()->get(['name', 'value'])->slice(0, 3)->all(),
+            'today_expenses' => ExpenseResource::collection($this->expensesToday()->get()->slice(0, 3)->all()),
             'month_statistics' => [
                 'expenses_quantity' => $expensesMonth->count(),
                 'expenses_total_value' => $expensesMonth->sum('value'),

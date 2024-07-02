@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->hasExpenses(3)
+            ->hasExpenses(3, [
+                'due_date' => today()
+            ])
             ->create([
                 'name' => 'Matheus Dresch',
                 'email' => 'matheus@dresch.dev',
