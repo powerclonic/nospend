@@ -89,7 +89,7 @@ const maskedCreatedDate = computed(() =>
 
 const statusList = {
   PAID: "Paga",
-  NOT_PAID: "Não paga",
+  AWAITING_PAYMENT: "Não paga",
   EXPIRED: "Vencida",
 };
 </script>

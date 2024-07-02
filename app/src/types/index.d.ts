@@ -3,7 +3,7 @@ export interface Expense {
   name: string;
   value: number;
   due_date: string;
-  status: "NOT_PAID" | "PAID" | "EXPIRED";
+  status: "AWAITING_PAYMENT" | "PAID" | "EXPIRED";
   payment_method?: string;
   payment_source?: string;
   created_at: string;

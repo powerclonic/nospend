@@ -68,10 +68,10 @@ const maskedDueDate = computed(() =>
 
 const statusList = {
   PAID: {
-    color: "succcess",
+    color: "primary",
     text: "Paga",
   },
-  NOT_PAID: {
+  AWAITING_PAYMENT: {
     color: "warning",
     text: "Não paga",
   },

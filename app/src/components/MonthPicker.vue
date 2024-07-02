@@ -12,12 +12,12 @@
 
 <script setup lang="ts">
 import { useDate } from "vuetify";
-import { watch } from "vue";
 
-const emits = defineEmits(["change"]);
+const date = defineModel({
+  default: new Date(),
+});
 
 const adapter = useDate();
-const date = ref(new Date());
 
 const addMonth = () => (date.value = adapter.addMonths(date.value, 1) as Date);
 const subMonth = () => (date.value = adapter.addMonths(date.value, -1) as Date);
@@ -28,11 +28,4 @@ const formattedDate = computed(() => {
 
   return `${month}/${year}`;
 });
-
-watch(date, () =>
-  emits("change", {
-    month: date.value.getMonth(),
-    year: date.value.getFullYear(),
-  })
-);
 </script>
