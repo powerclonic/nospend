@@ -1,7 +1,12 @@
 import client from "@/services/api";
+import type { SignInData, SignUpData } from "@/types";
 
 export default {
-  signin: (email: string, password: string) => {
-    return client.post("/login", { email, password });
+  signin: (data: SignInData) => {
+    return client.post("/login", data);
+  },
+
+  signup: (data: SignUpData) => {
+    return client.post("/register", data);
   },
 };

@@ -23,3 +23,15 @@ export interface Dashboard {
     expenses_total_not_recurrent: number;
   };
 }
+
+export interface SignInData {
+  email: string;
+  password: string;
+}
+
+export interface SignUpData {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}

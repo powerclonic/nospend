@@ -1,5 +1,5 @@
 <template>
-  <v-form @submit.prevent="sendForm" v-model="form">
+  <v-form @submit.prevent="sendForm" v-model="form" :disabled="loading">
     <h1 class="text-h6 text-secondary text-center mb-3">
       Já nos conhecemos, né?
     </h1>
@@ -23,7 +23,7 @@
         hide-details="auto"
       />
       <v-alert
-        v-model="loginError"
+        v-model="signinError"
         closable
         type="error"
         variant="tonal"
@@ -35,7 +35,7 @@
         block
         type="submit"
         :disabled="!form"
-        :loading="loading"
+        :loading
       >
         ENTRAR
       </v-btn>
@@ -48,14 +48,15 @@
 
 <script setup lang="ts">
 import auth from "@/services/api/auth";
+import { SignInData } from "@/types";
 
 const router = useRouter();
 
 const form = ref(false);
 const loading = ref(false);
-const loginError = ref(false);
+const signinError = ref(false);
 
-const credentials = ref({
+const credentials: Ref<SignInData> = ref({
   email: "",
   password: "",
 });
@@ -66,14 +67,14 @@ const rules = {
 
 const sendForm = async () => {
   try {
-    loginError.value = false;
+    signinError.value = false;
     loading.value = true;
 
-    await auth.signin(credentials.value.email, credentials.value.password);
+    await auth.signin(credentials.value);
 
     router.push("/home");
   } catch (error) {
-    loginError.value = true;
+    signinError.value = true;
   } finally {
     loading.value = false;
   }
