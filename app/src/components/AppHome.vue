@@ -9,7 +9,7 @@
   </v-dialog>
   <v-container class="d-flex flex-column ga-2" v-if="data">
     <article>
-      <p class="text-subtitle-1 text-secondary">Bom dia,</p>
+      <p class="text-subtitle-1 text-secondary">{{ greeting }},</p>
       <p class="text-h4 text-light font-weight-bold">{{ data.name }}!</p>
     </article>
     <v-card color="accent" rounded="lg">
@@ -107,50 +107,19 @@ const getData = async () => {
   }
 };
 
-// const data: Dashboard = {
-//   name: "Matheus",
-//   today_expenses: [
-//     {
-//       id: 1,
-//       value: 100,
-//       name: "Fatura",
-//       due_date: "2024-06-12",
-//       status: "PAID",
-//       created_at: "2024-06-10",
-//       recurrent: true,
-//       auto_pay: false,
-//       payment_source: "Sicredi",
-//       category: "Faturas",
-//     },
-//     {
-//       id: 1,
-//       value: 100,
-//       name: "Fatur2a",
-//       due_date: "2024-06-12",
-//       status: "AWAITING_PAYMENT",
-//       created_at: "2024-06-10",
-//       recurrent: true,
-//       auto_pay: true,
-//     },
-//     {
-//       id: 1,
-//       value: 100,
-//       name: "Fat3ura",
-//       due_date: "2024-06-12",
-//       status: "AWAITING_PAYMENT",
-//       created_at: "2024-06-10",
-//       recurrent: true,
-//       auto_pay: true,
-//     },
-//   ],
-//   month_statistics: {
-//     expenses_quantity: 10,
-//     expenses_total_paid: 2500,
-//     expenses_total_unpaid: 3500,
-//     expenses_total_value: 6000,
-//     expenses_total_not_recurrent: 756.5,
-//   },
-// };
-
 getData();
+
+const greeting = computed(() => {
+  const now = new Date();
+
+  if (now.getHours() < 12) {
+    return "Bom dia";
+  }
+
+  if (now.getHours() < 18) {
+    return "Boa tarde";
+  }
+
+  return "Boa noite";
+});
 </script>
