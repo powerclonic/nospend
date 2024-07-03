@@ -12,74 +12,80 @@
       <p class="text-subtitle-1 text-secondary">Bom dia,</p>
       <p class="text-h4 text-light font-weight-bold">{{ data.name }}!</p>
     </article>
-    <v-container
-      class="bg-accent rounded-lg pa-2 d-flex flex-column flex-wrap ga-2"
-    >
-      <div class="d-flex justify-space-between align-center">
-        <p class="text-h6">Despesas de hoje</p>
+    <v-card color="accent" rounded="lg">
+      <template #title> Despesas de hoje </template>
+      <template #subtitle> Mostrando as primeiras 3 despesas </template>
+      <template #append>
         <v-icon icon="mdi-clock-outline" color="primary" />
-      </div>
-      <expense-card
-        v-for="(value, index) in data.today_expenses"
-        :key="index"
-        :expense="value"
-      />
-      <v-card
-        v-if="data.today_expenses.length <= 0"
-        title="Tudo tranquilo"
-        subtitle="Nenhuma despesa para o dia de hoje"
-        color="background"
-      >
-        <template #append>
-          <v-icon icon="mdi-check" color="primary" />
-        </template>
-      </v-card>
-    </v-container>
+      </template>
+      <template #text>
+        <div class="d-flex flex-column ga-2">
+          <expense-card
+            v-for="(value, index) in data.today_expenses"
+            :key="index"
+            :expense="value"
+          />
+          <v-card
+            v-if="data.today_expenses.length <= 0"
+            title="Tudo tranquilo"
+            subtitle="Nenhuma despesa para o dia de hoje"
+            color="background"
+          >
+            <template #append>
+              <v-icon icon="mdi-check" color="primary" />
+            </template>
+          </v-card>
+        </div>
+      </template>
+    </v-card>
     <card-button
       title="Todas as despesas"
       icon="mdi-chevron-right"
       @click="$router.push('/expenses')"
     />
     <card-button title="Nova despesa" icon="mdi-plus">
-      <new-expense />
+      <new-expense @updated="() => getData()" />
     </card-button>
-    <v-container
-      class="bg-accent rounded-lg pa-2 d-flex flex-column flex-wrap ga-2"
-    >
-      <div class="d-flex justify-space-between align-center">
-        <p class="text-h6">Resumo do mês</p>
-        <v-icon icon="mdi-chart-donut" color="primary" />
-      </div>
-      <expense-stat
-        title="Nº de despesas"
-        :value="data.month_statistics.expenses_quantity"
-        icon="mdi-numeric"
-      />
-      <expense-stat
-        title="Total em despesas"
-        :value="data.month_statistics.expenses_total_value"
-        icon="mdi-wallet"
-        monetary
-      />
-      <expense-stat
-        title="Total já pago"
-        :value="data.month_statistics.expenses_total_paid"
-        icon="mdi-currency-usd"
-        monetary
-      />
-      <expense-stat
-        title="Nº de despesas"
-        :value="data.month_statistics.expenses_total_unpaid"
-        icon="mdi-currency-usd-off"
-        monetary
-      />
-      <expense-stat
-        title="Despesas não recorrentes"
-        :value="data.month_statistics.expenses_total_not_recurrent"
-        icon="mdi-sync-alert"
-        monetary
-      />
-    </v-container>
+    <v-card color="accent" rounded="lg">
+      <template #title> Resumo do mês </template>
+      <template #subtitle> Estatísticas gerais do mês atual</template>
+      <template #append>
+        <v-icon icon="mdi-clock-outline" color="primary" />
+      </template>
+      <template #text>
+        <div class="d-flex flex-column ga-2">
+          <expense-stat
+            title="Nº de despesas"
+            :value="data.month_statistics.expenses_quantity"
+            icon="mdi-numeric"
+          />
+          <expense-stat
+            title="Total em despesas"
+            :value="data.month_statistics.expenses_total_value"
+            icon="mdi-wallet"
+            monetary
+          />
+          <expense-stat
+            title="Total já pago"
+            :value="data.month_statistics.expenses_total_paid"
+            icon="mdi-currency-usd"
+            monetary
+          />
+          <expense-stat
+            title="Total não pago"
+            :value="data.month_statistics.expenses_total_unpaid"
+            icon="mdi-currency-usd-off"
+            monetary
+          />
+          <expense-stat
+            title="Despesas não recorrentes"
+            :value="data.month_statistics.expenses_total_not_recurrent"
+            icon="mdi-sync-alert"
+            monetary
+          />
+        </div>
+      </template>
+    </v-card>
   </v-container>
 </template>
 

@@ -9,4 +9,8 @@ export default {
   signup: (data: SignUpData) => {
     return client.post("/register", data);
   },
+
+  logout: () => {
+    return client.post("/logout");
+  },
 };

@@ -10,7 +10,7 @@
   <v-container class="d-flex flex-column ga-2">
     <month-picker v-model="selectedDate" />
     <card-button title="Nova despesa" icon="mdi-plus">
-      <new-expense />
+      <new-expense @updated="() => getData()" />
     </card-button>
     <v-card class="rounded-lg" color="accent">
       <template #title> Despesas do mês </template>
@@ -19,7 +19,13 @@
       </template>
       <template #text>
         <div class="d-flex flex-column ga-2" v-if="data && data.length > 0">
-          <expense-card v-for="(expense, key) in data" :key :expense detailed />
+          <expense-card
+            v-for="(expense, key) in data"
+            :key
+            :expense
+            detailed
+            @updated="() => getData()"
+          />
         </div>
         <v-card
           v-else

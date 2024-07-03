@@ -26,6 +26,7 @@ class UpdateRequest extends FormRequest
             'value' => ['integer'],
 
             'due_date' => ['date'],
+            'status' => ['in:PAID,AWAITING_PAYMENT,EXPIRED'],
 
             'category' => ['min:2', 'string:32'],
             'payment_method' => ['min:2', 'string:32'],

@@ -16,6 +16,7 @@ class Expense extends Model
         'value',
         'due_date',
         'category',
+        'status',
         'payment_method',
         'payment_source',
         'recurrent',

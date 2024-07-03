@@ -29,6 +29,13 @@
         variant="tonal"
         text="Credenciais inválidas"
       />
+      <v-alert
+        v-show="$route.query.message"
+        closable
+        type="warning"
+        variant="tonal"
+        :text="$route.query.message"
+      />
       <v-btn
         color="primary"
         variant="tonal"

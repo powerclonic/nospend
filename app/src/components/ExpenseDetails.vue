@@ -1,4 +1,12 @@
 <template>
+  <v-dialog :model-value="loading" persistent>
+    <v-card color="accent">
+      <template #title>Aguarde...</template>
+      <template #append>
+        <v-progress-circular color="primary" indeterminate />
+      </template>
+    </v-card>
+  </v-dialog>
   <v-dialog v-model="showDialog" persistent activator="parent">
     <v-card class="rounded-lg" color="background">
       <template #title> DETALHES DA DESPESA </template>
@@ -14,7 +22,7 @@
           title="Situação"
           :text="statusList[expense.status]"
         />
-        <expense-details-item title="Vcto./Pgto." :text="maskedDueDate" />
+        <expense-details-item title="Vcto./Pgto." :text="expense.due_date" />
         <expense-details-item
           title="Forma de pagamento"
           :text="expense.payment_method ?? 'Não informado'"
@@ -23,7 +31,10 @@
           title="Fonte do pagamento"
           :text="expense.payment_source ?? 'Não informada'"
         />
-        <expense-details-item title="Adicionada em" :text="maskedCreatedDate" />
+        <expense-details-item
+          title="Adicionada em"
+          :text="expense.created_at"
+        />
         <div class="d-flex flex-wrap ga-2">
           <v-chip size="large" prepend-icon="mdi-repeat">{{
             expense.recurrent ? "Sim" : "Não"
@@ -43,6 +54,7 @@
           color="primary"
           size="large"
           :disabled="expense.status === 'PAID'"
+          @click="payExpense"
         />
         <v-btn
           icon="mdi-pencil"
@@ -51,19 +63,33 @@
           size="large"
           ref="editButton"
         />
-        <v-btn icon="mdi-delete" variant="tonal" color="error" size="large" />
+        <v-btn
+          icon="mdi-delete"
+          variant="tonal"
+          color="error"
+          size="large"
+          @click="deleteExpense"
+        />
       </template>
     </v-card>
-    <new-expense update :expense :activator="editButton" />
+    <new-expense
+      update
+      :expense
+      :activator="editButton"
+      @updated="$emit('updated')"
+    />
   </v-dialog>
 </template>
 
 <script setup lang="ts">
+import expenseApi from "@/services/api/expense";
 import { Expense } from "@/types";
 import { PropType } from "vue";
 
 const showDialog = ref(false);
 const editButton = ref();
+
+const loading = ref(false);
 
 const props = defineProps({
   expense: {
@@ -72,6 +98,8 @@ const props = defineProps({
   },
 });
 
+const emits = defineEmits(["updated"]);
+
 const formatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -79,17 +107,37 @@ const formatter = new Intl.NumberFormat("pt-BR", {
 
 const maskedValue = computed(() => formatter.format(props.expense.value));
 
-const maskedDueDate = computed(() =>
-  new Date(props.expense.due_date).toLocaleDateString("pt-BR")
-);
-
-const maskedCreatedDate = computed(() =>
-  new Date(props.expense.created_at).toLocaleDateString("pt-BR")
-);
-
 const statusList = {
   PAID: "Paga",
   AWAITING_PAYMENT: "Não paga",
   EXPIRED: "Vencida",
+};
+
+const deleteExpense = async () => {
+  try {
+    loading.value = true;
+    await expenseApi.delete(props.expense);
+    showDialog.value = false;
+
+    emits("updated");
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const payExpense = async () => {
+  try {
+    loading.value = true;
+    await expenseApi.pay(props.expense);
+    showDialog.value = false;
+
+    emits("updated");
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
 };
 </script>

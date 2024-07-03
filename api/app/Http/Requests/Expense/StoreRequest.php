@@ -25,11 +25,11 @@ class StoreRequest extends FormRequest
             'name' => ['required', 'string', 'min:2', 'max:64'],
             'value' => ['required', 'integer'],
 
-            'due_date' => ['date'],
+            'due_date' => ['required', 'date'],
 
-            'category' => ['min:2', 'string:32'],
-            'payment_method' => ['min:2', 'string:32'],
-            'payment_source' => ['min:2', 'string:32'],
+            'category' => ['sometimes', 'min:2', 'string:32', 'nullable'],
+            'payment_method' => ['sometimes', 'min:2', 'string:32', 'nullable'],
+            'payment_source' => ['sometimes', 'min:2', 'string:32', 'nullable'],
 
             'recurrent' => ['required', 'boolean'],
             'auto_pay' => ['required', 'boolean'],

@@ -1,14 +1,26 @@
 <template>
-  <v-dialog v-model="showDialog" persistent :activator>
-    <v-card class="rounded-lg" color="background">
-      <template #title> {{ update ? "ATUALIZAR" : "CRIAR" }} DESPESA </template>
+  <v-dialog :model-value="loading" persistent>
+    <v-card color="accent">
+      <template #title
+        >{{ update ? "Atualizando" : "Criando" }} despesa</template
+      >
       <template #append>
-        <v-btn icon variant="text" @click="showDialog = false">
-          <v-icon icon="mdi-close" />
-        </v-btn>
+        <v-progress-circular color="primary" indeterminate />
       </template>
-      <template #text>
-        <v-form>
+    </v-card>
+  </v-dialog>
+  <v-dialog v-model="showDialog" persistent :activator>
+    <v-form @submit.prevent="sendForm">
+      <v-card class="rounded-lg" color="background">
+        <template #title>
+          {{ update ? "ATUALIZAR" : "CRIAR" }} DESPESA
+        </template>
+        <template #append>
+          <v-btn icon variant="text" @click="showDialog = false">
+            <v-icon icon="mdi-close" />
+          </v-btn>
+        </template>
+        <template #text>
           <v-text-field
             v-model="expenseInput.name"
             label="Nome da despesa"
@@ -60,19 +72,21 @@
             color="primary"
             hide-details
           />
-        </v-form>
-      </template>
-      <template #actions>
-        <v-btn color="error" variant="text" @click="showDialog = false">
-          Cancelar
-        </v-btn>
-        <v-btn color="primary" variant="tonal"> Salvar </v-btn>
-      </template>
-    </v-card>
+          <button class="d-none" ref="formButton" type="submit">w</button>
+        </template>
+        <template #actions>
+          <v-btn color="error" variant="text" @click="showDialog = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" variant="tonal" type="submit"> Salvar </v-btn>
+        </template>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
+import expenseApi from "@/services/api/expense";
 import { Expense } from "@/types";
 import { PropType } from "vue";
 
@@ -90,9 +104,14 @@ const props = defineProps({
   },
 });
 
-const showDialog = ref(false);
+const emits = defineEmits(["updated"]);
 
-const expenseInput: Ref<any> = ref({
+const formButton = ref(null);
+
+const showDialog = ref(false);
+const loading = ref(false);
+
+const cleanInput = {
   name: "",
   value: 0,
   payment_method: "",
@@ -101,10 +120,22 @@ const expenseInput: Ref<any> = ref({
   category: "",
   recurrent: false,
   auto_pay: false,
-});
+};
+
+const getFormattedDatte = (date: string) => {
+  const dateArray = date.split("/");
+
+  return `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+};
+
+const expenseInput: Ref<any> = ref({ ...cleanInput });
 
 if (props.update) {
-  expenseInput.value = { ...expenseInput.value, ...props.expense };
+  expenseInput.value = {
+    ...expenseInput.value,
+    ...props.expense,
+    due_date: getFormattedDatte(props.expense?.due_date as unknown as string),
+  };
   expenseInput.value.value *= 100;
 }
 
@@ -118,4 +149,23 @@ const formattedValue = computed({
     expenseInput.value.value = Number(newValue.replace(/\D/g, ""));
   },
 });
+
+const sendForm = async () => {
+  try {
+    loading.value = true;
+    if (props.update) {
+      await expenseApi.update(expenseInput.value);
+    } else {
+      await expenseApi.create(expenseInput.value);
+    }
+    expenseInput.value = { ...cleanInput };
+    showDialog.value = false;
+
+    emits("updated");
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
 </script>

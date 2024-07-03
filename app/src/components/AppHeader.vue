@@ -28,12 +28,27 @@
     </v-list>
     <template #append>
       <v-list density="comfortable">
-        <v-list-item prepend-icon="mdi-logout" title="Sair" link />
+        <v-list-item
+          prepend-icon="mdi-logout"
+          title="Sair"
+          link
+          @click="destroySession"
+        />
       </v-list>
     </template>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
+import auth from "@/services/api/auth";
+
+const router = useRouter();
+
 const drawer = ref(false);
+
+const destroySession = async () => {
+  await auth.logout();
+
+  router.push("/signin");
+};
 </script>

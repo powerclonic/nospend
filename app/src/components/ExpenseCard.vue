@@ -1,6 +1,6 @@
 <template>
   <v-card color="background">
-    <expense-details :expense />
+    <expense-details :expense @updated="$emit('updated')" />
     <template #title>
       <span class="text-light">{{ expense.name }}</span>
     </template>
@@ -16,7 +16,7 @@
           {{ status.text }}
         </v-chip>
         <v-chip prepend-icon="mdi-calendar" color="secondary">
-          {{ maskedDueDate }}
+          {{ expense.due_date }}
         </v-chip>
         <v-chip prepend-icon="mdi-repeat" color="secondary">
           {{ expense.recurrent ? "Sim" : "Não" }}
@@ -55,16 +55,14 @@ const props = defineProps({
   },
 });
 
+defineEmits(["updated"]);
+
 const formatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
 });
 
 const maskedValue = computed(() => formatter.format(props.expense.value));
-
-const maskedDueDate = computed(() =>
-  new Date(props.expense.due_date).toLocaleDateString("pt-BR")
-);
 
 const statusList = {
   PAID: {
