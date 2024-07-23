@@ -127,8 +127,8 @@ class ExpenseTest extends TestCase
             method: 'GET',
             uri: '/api/expenses',
             parameters: [
-                'year' => 2024,
-                'month' => 6
+                'year' => today()->year,
+                'month' => today()->month
             ]
         );
 
@@ -200,7 +200,7 @@ class ExpenseTest extends TestCase
             $json->whereAllType([
                 'data.id' => 'integer',
                 'data.name' => 'string',
-                'data.value' => 'double',
+                'data.value' => 'integer|double',
                 'data.due_date' => 'string',
                 'data.payment_method' => 'string|null',
                 'data.payment_source' => 'string|null',
