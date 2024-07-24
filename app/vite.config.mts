@@ -15,11 +15,6 @@ import { fileURLToPath, URL } from "node:url";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    VitePWA({ 
-      registerType: 'autoUpdate', 
-      injectRegister: 'script',
-      manifest: false
-    }),
     VueRouter({
       dts: "src/typed-router.d.ts",
     }),
