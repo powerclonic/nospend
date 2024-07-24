@@ -21,7 +21,8 @@ client.interceptors.request.use(async (request) => {
 });
 
 client.interceptors.response.use(null, (err) => {
-  if (err.response?.data.message === "Unauthenticated.") {
+  
+  if (err.response?.data.message === "Unauthenticated." && err.response.request.responseURL.indexOf('auth-check') < 0) {
     router.push({
       path: "/signin",
       query: { message: "Sua sessão expirou" },

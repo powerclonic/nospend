@@ -8,6 +8,7 @@
 import vuetify from './vuetify'
 import pinia from '../stores'
 import router from '../router'
+import "@capacitor/core"
 
 // Types
 import type { App } from 'vue'

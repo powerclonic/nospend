@@ -23,7 +23,7 @@
         hide-details="auto"
       />
       <v-alert
-        v-model="signinError"
+        v-model="signInError"
         closable
         type="error"
         variant="tonal"
@@ -34,7 +34,7 @@
         closable
         type="warning"
         variant="tonal"
-        :text="$route.query.message"
+        :text="$route.query.message as string"
       />
       <v-btn
         color="primary"
@@ -61,7 +61,7 @@ const router = useRouter();
 
 const form = ref(false);
 const loading = ref(false);
-const signinError = ref(false);
+const signInError = ref(false);
 
 const credentials: Ref<SignInData> = ref({
   email: "",
@@ -74,14 +74,14 @@ const rules = {
 
 const sendForm = async () => {
   try {
-    signinError.value = false;
+    signInError.value = false;
     loading.value = true;
 
-    await auth.signin(credentials.value);
+    await auth.signIn(credentials.value);
 
     router.push("/home");
   } catch (error) {
-    signinError.value = true;
+    signInError.value = true;
   } finally {
     loading.value = false;
   }
