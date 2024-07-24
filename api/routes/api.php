@@ -10,5 +10,3 @@ Route::middleware(['auth:sanctum'])->get('/auth-check', function () {
 
 Route::apiResource('/expenses', ExpenseController::class)
     ->middleware('auth:sanctum');
-
-require __DIR__ . '/auth.php';

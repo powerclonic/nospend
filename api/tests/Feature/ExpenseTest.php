@@ -158,7 +158,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->get(
-            uri: '/api/expenses/2'
+            uri: '/api/expenses/' . PHP_INT_MAX
         );
 
         $response->assertStatus(404);
@@ -166,7 +166,7 @@ class ExpenseTest extends TestCase
 
     public function test_show_returns_forbidden_when_another_user_try_to_access_the_expense(): void
     {
-        User::factory()
+        $user = User::factory()
             ->hasExpenses(1)
             ->create();
 
@@ -176,7 +176,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->getJson(
-            uri: '/api/expenses/1'
+            uri: '/api/expenses/' . $user->expenses()->first()->id
         );
 
         $response->assertStatus(403);
@@ -185,13 +185,13 @@ class ExpenseTest extends TestCase
     public function test_show_returns_the_correct_data_when_a_valid_expense_is_sent(): void
     {
         Sanctum::actingAs(
-            User::factory()
+            $user = User::factory()
                 ->hasExpenses(1)
                 ->create()
         );
 
         $response = $this->get(
-            uri: '/api/expenses/1'
+            uri: '/api/expenses/' . $user->expenses()->first()->id
         );
 
         $response->assertStatus(200);
@@ -220,7 +220,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->putJson(
-            uri: '/api/expenses/2',
+            uri: '/api/expenses/' . PHP_INT_MAX,
         );
 
         $response->assertStatus(404);
@@ -228,7 +228,7 @@ class ExpenseTest extends TestCase
 
     public function test_update_returns_forbidden_when_another_user_try_to_access_the_expense(): void
     {
-        User::factory()
+        $user = User::factory()
             ->hasExpenses(1)
             ->create();
 
@@ -238,7 +238,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->putJson(
-            uri: '/api/expenses/1'
+            uri: '/api/expenses/' . $user->expenses()->first()->id
         );
 
         $response->assertStatus(403);
@@ -253,7 +253,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->putJson(
-            uri: '/api/expenses/1',
+            uri: '/api/expenses/' . $user->expenses()->first()->id,
             data: [
                 'name' => 'test'
             ]
@@ -273,7 +273,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->deleteJson(
-            uri: '/api/expenses/2'
+            uri: '/api/expenses/' . PHP_INT_MAX
         );
 
         $response->assertNotFound();
@@ -281,7 +281,7 @@ class ExpenseTest extends TestCase
 
     public function test_delete_returns_forbidden_when_another_user_try_to_access_the_expense(): void
     {
-        User::factory()
+        $user = User::factory()
             ->hasExpenses(1)
             ->create();
 
@@ -291,7 +291,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->putJson(
-            uri: '/api/expenses/1'
+            uri: '/api/expenses/' . $user->expenses()->first()->id
         );
 
         $response->assertStatus(403);
@@ -306,7 +306,7 @@ class ExpenseTest extends TestCase
         );
 
         $response = $this->deleteJson(
-            uri: '/api/expenses/1'
+            uri: '/api/expenses/' . $user->expenses()->first()->id
         );
 
         $response->assertSuccessful();
