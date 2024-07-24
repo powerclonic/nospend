@@ -3,18 +3,18 @@ import type { SignInData, SignUpData } from "@/types";
 
 export default {
   signIn: (data: SignInData) => {
-    return client.post("/api/login", data);
+    return client.post("/auth/login", data);
   },
 
   signup: (data: SignUpData) => {
-    return client.post("/api/register", data);
+    return client.post("/auth/register", data);
   },
 
   logout: () => {
-    return client.post("/api/logout");
+    return client.post("/auth/logout");
   },
 
   check: () => {
-    return client.get("/api/auth-check");
+    return client.get("/auth/auth-check");
   }
 };
