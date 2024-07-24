@@ -15,6 +15,6 @@ export default {
   },
 
   check: () => {
-    return client.get("/auth/auth-check");
-  }
+    return client.get("/api/auth-check");
+  },
 };
