@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "preserve",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "ESNext", "DOM.Iterable"],
     "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -24,10 +24,7 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.vue"
-  ],
+  "include": ["src/**/*", "src/**/*.vue"],
   "exclude": ["dist", "node_modules", "cypress"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
