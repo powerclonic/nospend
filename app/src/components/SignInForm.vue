@@ -34,7 +34,7 @@
         closable
         type="warning"
         variant="tonal"
-        :text="$route.query.message"
+        :text="$route.query.message as string"
       />
       <v-btn
         color="primary"
