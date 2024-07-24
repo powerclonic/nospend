@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -57,7 +56,8 @@ class User extends Authenticatable
     {
         return $this->expenses()
             ->whereMonth('due_date', $month)
-            ->whereYear('due_date', $year);
+            ->whereYear('due_date', $year)
+            ->orderBy('due_date', 'ASC');
     }
 
     public function expensesToday(): HasMany

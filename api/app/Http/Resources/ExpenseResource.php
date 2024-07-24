@@ -24,6 +24,7 @@ class ExpenseResource extends JsonResource
             "payment_source" => $this->payment_source,
             "created_at" => $this->created_at->format('d/m/Y'),
             "recurrent" => boolval($this->recurrent),
+            "auto_pay" => boolval($this->auto_pay),
             "category" => $this->category,
         ];
     }
