@@ -19,6 +19,8 @@ class ExpenseController extends Controller
      */
     public function index(ListRequest $request)
     {
+        info($request->user());
+
         if ($request->validated()) {
             return ExpenseResource::collection(
                 $request->user()->expensesMonth(...$request->validated())->get()
@@ -26,8 +28,6 @@ class ExpenseController extends Controller
         } else {
             return new DashboardResource(
                 $request->user()
-                    ->with('expenses')
-                    ->first()
             );
         }
     }
