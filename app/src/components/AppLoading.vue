@@ -1,7 +1,7 @@
 <template>
   <v-overlay
     persistent
-    v-model="active"
+    v-model="loading"
     class="bg-background d-flex flex-column align-center justify-center text-center"
     :scrim="false"
     transition="fade"
@@ -13,9 +13,16 @@
 </template>
 
 <script lang="ts" setup>
-const active = ref(true);
+import auth from "@/services/api/auth";
 
-setTimeout(() => {
-  active.value = false;
-}, 2500);
+const loading = ref(true);
+
+try {
+  await auth.check();
+  useRouter().push("/home");
+} catch (error) {
+  //
+} finally {
+  loading.value = false;
+}
 </script>

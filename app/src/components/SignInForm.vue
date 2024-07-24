@@ -3,7 +3,6 @@
     <h1 class="text-h6 text-secondary text-center mb-3">
       Já nos conhecemos, né?
     </h1>
-    <p>{{ t }}</p>
     <div class="d-flex flex-column ga-2">
       <v-text-field
         v-model="credentials.email"
@@ -60,8 +59,6 @@ import { SignInData } from "@/types";
 
 const router = useRouter();
 
-const t = ref("");
-
 const form = ref(false);
 const loading = ref(false);
 const signInError = ref(false);
@@ -85,8 +82,6 @@ const sendForm = async () => {
     router.push("/home");
   } catch (error) {
     signInError.value = true;
-    //@ts-ignore
-    t.value = error?.response?.data; // TODO: REMOVE THIS
   } finally {
     loading.value = false;
   }

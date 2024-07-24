@@ -13,4 +13,8 @@ export default {
   logout: () => {
     return client.post("/api/logout");
   },
+
+  check: () => {
+    return client.get("/api/auth-check");
+  }
 };
