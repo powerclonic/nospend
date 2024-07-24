@@ -1,12 +1,29 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "name": "NoSpend",
   "short_name": "NoSpend",
-  "theme_color": "#C6DE41",
+  "theme_color": "#071C21",
   "background_color": "#071C21",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
+  "screenshots": [
+    {
+      "src": "images/screenshots/portrait.png",
+      "sizes": "405x878",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Homescreen of NoSpend app"
+    },
+    {
+      "src": "images/screenshots/wide.png",
+      "sizes": "1920x970",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homescreen of NoSpend app"
+    }
+  ],
   "icons": [
     {
       "src": "images/icons/icon-72x72.png",
@@ -36,11 +53,6 @@
     {
       "src": "images/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "images/icons/icon-384x384.png",
-      "sizes": "384x384",
       "type": "image/png"
     },
     {

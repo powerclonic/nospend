@@ -2,7 +2,7 @@ import client from "@/services/api";
 import type { SignInData, SignUpData } from "@/types";
 
 export default {
-  signin: (data: SignInData) => {
+  signIn: (data: SignInData) => {
     return client.post("/api/login", data);
   },
 

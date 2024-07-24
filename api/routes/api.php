@@ -10,3 +10,5 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::apiResource('/expenses', ExpenseController::class)
     ->middleware('auth:sanctum');
+
+require __DIR__ . '/auth.php';
