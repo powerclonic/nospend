@@ -3,14 +3,14 @@ import type { SignInData, SignUpData } from "@/types";
 
 export default {
   signin: (data: SignInData) => {
-    return client.post("/login", data);
+    return client.post("/api/login", data);
   },
 
   signup: (data: SignUpData) => {
-    return client.post("/register", data);
+    return client.post("/api/register", data);
   },
 
   logout: () => {
-    return client.post("/logout");
+    return client.post("/api/logout");
   },
 };
