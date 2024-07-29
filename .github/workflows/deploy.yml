@@ -2,7 +2,7 @@ name: Application
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feature/deploy-workflow"]
 
 jobs:
   deploy:
