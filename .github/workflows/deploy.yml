@@ -33,6 +33,7 @@ jobs:
             cd ${{ vars.TARGET_DIR }}/app
             npm install
             npm run build
+            rm -rf ${{ vars.FRONTEND_DIR }}/*
             cp -r dist/* ${{ vars.FRONTEND_DIR }}
 
       - name: Restart the Backend
