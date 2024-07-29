@@ -12,7 +12,7 @@ jobs:
       - name: Repository checkout
         uses: actions/checkout@v4
 
-      - name: Deploy to host
+      - name: Copy files to host
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -21,3 +21,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ${{ vars.SOURCE_DIR }}
           target: ${{ vars.TARGET_DIR }}
+
+      - name: Build the Frontend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            whoami
