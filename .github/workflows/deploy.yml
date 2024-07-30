@@ -50,4 +50,4 @@ jobs:
             composer install
             php artisan key:generate
             vendor/bin/sail down -v
-            vendor/bin/sail up
+            vendor/bin/sail up -d
