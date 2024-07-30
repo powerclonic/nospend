@@ -31,6 +31,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{ vars.TARGET_DIR }}/app
+            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.app .
             npm install
             npm run build
             rm -rf ${{ vars.FRONTEND_DIR }}/*
@@ -45,6 +46,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{ vars.TARGET_DIR }}/api
+            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.api .
             composer install
+            php artisan key:generate
             vendor/bin/sail down -v
             vendor/bin/sail up
