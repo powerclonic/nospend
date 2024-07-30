@@ -1,0 +1,53 @@
+name: Application
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v4
+
+      - name: Copy files to host
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ${{ vars.SOURCE_DIR }}
+          target: ${{ vars.TARGET_DIR }}
+
+      - name: Build the Frontend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ vars.TARGET_DIR }}/app
+            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.app .env.local
+            npm install
+            npm run build
+            rm -rf ${{ vars.FRONTEND_DIR }}/*
+            cp -r dist/* ${{ vars.FRONTEND_DIR }}
+
+      - name: Restart the Backend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ vars.TARGET_DIR }}/api
+            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.api .env
+            composer install
+            php artisan key:generate
+            vendor/bin/sail down -v
+            vendor/bin/sail up -d
