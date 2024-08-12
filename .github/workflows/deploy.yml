@@ -47,4 +47,4 @@ jobs:
             cp ${{ secrets.ENVIRONMENT_DIR }}/.env.api .env
             composer install
             php artisan key:generate
-            php artisan queue:work
+            php artisan queue:work &
