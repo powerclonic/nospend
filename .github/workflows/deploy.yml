@@ -51,3 +51,4 @@ jobs:
             php artisan key:generate
             vendor/bin/sail down -v
             vendor/bin/sail up -d
+            php artisan queue:work
