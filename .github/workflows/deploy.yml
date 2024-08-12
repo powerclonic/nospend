@@ -20,9 +20,9 @@ jobs:
           password: ${{ secrets.REMOTE_PASS }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ${{ vars.SOURCE_DIR }}
-          target: ${{ vars.TARGET_DIR }}
+          target: ${{ secrets.TARGET_DIR }}
 
-      - name: Build the Frontend
+      - name: Update the Frontend
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -30,14 +30,12 @@ jobs:
           password: ${{ secrets.REMOTE_PASS }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ vars.TARGET_DIR }}/app
+            cd ${{ secrets.TARGET_DIR }}/app
             cp ${{ secrets.ENVIRONMENT_DIR }}/.env.app .env.local
             npm install
             npm run build
-            rm -rf ${{ vars.FRONTEND_DIR }}/*
-            cp -r dist/* ${{ vars.FRONTEND_DIR }}
 
-      - name: Restart the Backend
+      - name: Update the Backend
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -45,10 +43,8 @@ jobs:
           password: ${{ secrets.REMOTE_PASS }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ vars.TARGET_DIR }}/api
+            cd ${{ secrets.TARGET_DIR }}/api
             cp ${{ secrets.ENVIRONMENT_DIR }}/.env.api .env
             composer install
             php artisan key:generate
-            vendor/bin/sail down -v
-            vendor/bin/sail up -d
             php artisan queue:work
