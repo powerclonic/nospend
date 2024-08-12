@@ -28,9 +28,9 @@ class UpdateRequest extends FormRequest
             'due_date' => ['date'],
             'status' => ['in:PAID,AWAITING_PAYMENT,EXPIRED'],
 
-            'category' => ['min:2', 'string:32'],
-            'payment_method' => ['min:2', 'string:32'],
-            'payment_source' => ['min:2', 'string:32'],
+            'category' => ['nullable', 'min:2', 'string:32'],
+            'payment_method' => ['nullable', 'min:2', 'string:32'],
+            'payment_source' => ['nullable', 'min:2', 'string:32'],
 
             'recurrent' => ['boolean'],
             'auto_pay' => ['boolean'],
