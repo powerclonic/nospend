@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\Status;
+use App\Events\ExpenseMarkedAsExpired;
 use App\Models\Expense;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -32,7 +33,9 @@ class CheckExpiredExpenses implements ShouldQueue
             ->get();
 
         $yesterdayExpenses->each(function (Expense $item) {
-            $item->update(['status' => Status::PAID]);
+            $item->update(['status' => Status::EXPIRED]);
+
+            ExpenseMarkedAsExpired::dispatch($item);
         });
     }
 }
