@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\RecurrentExpenseProcessed;
 use App\Models\Expense;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -42,6 +43,8 @@ class ProcessRecurrentExpenses implements ShouldQueue
                     'due_date' => $item->due_date->addMonth()
                 ])
                 ->save();
+
+            RecurrentExpenseProcessed::dispatch($item);
         });
     }
 }
