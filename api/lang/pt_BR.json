@@ -149,8 +149,11 @@
     "Remove": "Remover",
     "Value": "Valor",
     "Source": "Fonte",
+    "Date": "Data",
     "Thank you": "Obrigado",
     "NoSpend Team": "Time da NoSpend",
     "Expense paid": "Despesa paga",
-    "The expense `:name` was paid automatically by our system": "A despesa `:name` foi paga automaticamente por nosso sistema"
+    "Expense replicated": "Despesa duplicada",
+    "The expense `:name` was paid automatically by our system": "A despesa `:name` foi paga automaticamente por nosso sistema",
+    "The expense `:name` was replicated automatically by our system": "A despesa `:name` foi duplicada automaticamente por nosso sistema"
 }
