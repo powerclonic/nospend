@@ -6,6 +6,7 @@ return [
         'updated' => 'Expense updated successfully',
         'deleted' => 'Expense deleted successfully',
         'paid' => 'The expense :name was paid',
-        'replicated' => 'The expense :name was created'
+        'replicated' => 'The expense :name was created',
+        'expire' => 'The expense :name has expired'
     ],
 ];
