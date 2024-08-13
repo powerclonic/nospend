@@ -6,6 +6,7 @@ return [
         'updated' => 'Despesa atualizada com sucesso',
         'deleted' => 'Despesa deletada com sucesso',
         'paid' => 'A despesa :name foi paga',
-        'replicated' => 'A despesa :name foi criada'
+        'replicated' => 'A despesa :name foi criada',
+        'expired' => 'A despesa :name venceu'
     ]
 ];
