@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\Status;
+use App\Events\ExpensePaid;
 use App\Models\Expense;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,6 +35,8 @@ class ProcessAutoPayExpenses implements ShouldQueue
 
         $todayExpenses->each(function (Expense $item) {
             $item->update(['status' => Status::PAID]);
+
+            ExpensePaid::dispatch($item);
         });
     }
 }
