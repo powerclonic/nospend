@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\CheckExpiredExpenses;
 use App\Jobs\ProcessAutoPayExpenses;
 use App\Jobs\ProcessRecurrentExpenses;
 use Illuminate\Foundation\Inspiring;
@@ -13,3 +14,5 @@ Artisan::command('inspire', function () {
 Schedule::job(ProcessRecurrentExpenses::class)->monthly();
 
 Schedule::job(ProcessAutoPayExpenses::class)->daily();
+
+Schedule::job(CheckExpiredExpenses::class)->daily();

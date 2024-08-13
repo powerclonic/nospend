@@ -153,7 +153,9 @@
     "Thank you": "Obrigado",
     "NoSpend Team": "Time da NoSpend",
     "Expense paid": "Despesa paga",
+    "Expense expired": "Despesa vencida",
     "Expense replicated": "Despesa duplicada",
+    "The expense `:name` has expired": "A despesa `:name` venceu",
     "The expense `:name` was paid automatically by our system": "A despesa `:name` foi paga automaticamente por nosso sistema",
     "The expense `:name` was replicated automatically by our system": "A despesa `:name` foi duplicada automaticamente por nosso sistema"
 }
