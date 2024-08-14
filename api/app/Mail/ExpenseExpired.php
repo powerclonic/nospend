@@ -39,7 +39,7 @@ class ExpenseExpired extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.expense.expired',
+            markdown: 'mail.expenses.expired',
         );
     }
 
