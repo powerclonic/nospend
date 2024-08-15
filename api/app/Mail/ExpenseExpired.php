@@ -29,7 +29,7 @@ class ExpenseExpired extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('app.expenses.expired',  ['name' => $this->expense->name])
+            subject: __('app.expense.expired',  ['name' => $this->expense->name])
         );
     }
 
