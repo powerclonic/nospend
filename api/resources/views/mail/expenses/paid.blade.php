@@ -11,6 +11,10 @@
 
 </x-mail::table>
 
+<x-mail::button :url="$expenseUrl">
+__("Go to expense")
+</x-mail::button>
+
 {{ __("Thank you") }},<br />
 {{ __("NoSpend Team") }}
 

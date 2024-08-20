@@ -9,10 +9,13 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 
 class ExpenseExpired extends Mailable
 {
     use Queueable, SerializesModels;
+
+    public string $expenseUrl;
 
     /**
      * Create a new message instance.
@@ -20,7 +23,7 @@ class ExpenseExpired extends Mailable
     public function __construct(
         public Expense $expense
     ) {
-        //
+        $this->expenseUrl = config("app.frontend_url") . "/expenses?expense=" . $this->expense->id; 
     }
 
     /**
