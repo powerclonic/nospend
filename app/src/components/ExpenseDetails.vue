@@ -86,17 +86,20 @@ import expenseApi from "@/services/api/expense";
 import { Expense } from "@/types";
 import { PropType } from "vue";
 
-const showDialog = ref(false);
-const editButton = ref();
-
-const loading = ref(false);
-
 const props = defineProps({
   expense: {
     type: Object as PropType<Expense>,
     required: true,
   },
 });
+
+const route = useRoute();
+const router = useRouter();
+
+const showDialog = ref(Number(route.query.expense) === props.expense.id);
+const editButton = ref();
+
+const loading = ref(false);
 
 const emits = defineEmits(["updated"]);
 
@@ -140,4 +143,10 @@ const payExpense = async () => {
     loading.value = false;
   }
 };
+
+watch(showDialog, (newValue) => {
+  router.push(
+    newValue ? { query: { expense: props.expense.id } } : { query: {} }
+  );
+});
 </script>
