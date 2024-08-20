@@ -14,13 +14,15 @@ class ExpensePaid extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public string $expenseUrl;
+
     /**
      * Create a new message instance.
      */
     public function __construct(
         public Expense $expense
     ) {
-        //
+        $this->expenseUrl = config("app.frontend_url") . "/expenses?expense=" . $this->expense->id; 
     }
 
     /**
