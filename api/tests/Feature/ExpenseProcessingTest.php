@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\Status;
+use App\Jobs\CheckExpiredExpenses;
 use App\Jobs\ProcessAutoPayExpenses;
 use App\Jobs\ProcessRecurrentExpenses;
 use App\Models\Expense;
@@ -59,5 +60,37 @@ class ExpenseProcessingTest extends TestCase
         ProcessRecurrentExpenses::dispatch();
 
         $this->assertDatabaseCount('expenses', 2);
+    }
+
+    public function test_expense_status_changes_to_expired_after_due_date(): void
+    {
+        $user = User::factory()
+            ->hasExpenses(1, [
+                'due_date' => Carbon::today(),
+                'status' => Status::AWAITING_PAYMENT
+            ])
+            ->create();
+
+        $this->travel(1)->day();
+
+        CheckExpiredExpenses::dispatch();
+
+        $this->assertEquals($user->expenses->first()->status, Status::EXPIRED);
+    }
+
+    public function test_expense_status_remains_paid_after_due_date(): void
+    {
+        $user = User::factory()
+            ->hasExpenses(1, [
+                'due_date' => Carbon::today(),
+                'status' => Status::PAID
+            ])
+            ->create();
+
+        $this->travel(1)->day();
+
+        CheckExpiredExpenses::dispatch();
+
+        $this->assertEquals($user->expenses->first()->status, Status::PAID);
     }
 }

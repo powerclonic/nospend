@@ -30,6 +30,7 @@ class CheckExpiredExpenses implements ShouldQueue
     public function handle(): void
     {
         $yesterdayExpenses = Expense::where('due_date', Carbon::yesterday())
+            ->where('status', Status::AWAITING_PAYMENT)
             ->get();
 
         $yesterdayExpenses->each(function (Expense $item) {
