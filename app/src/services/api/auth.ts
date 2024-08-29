@@ -21,4 +21,8 @@ export default {
   forgotPassword: (email: string) => {
     return client.post("/auth/forgot-password", { email });
   },
+
+  resetPassword: (data: object) => {
+    return client.post("/auth/reset-password", data);
+  },
 };

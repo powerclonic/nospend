@@ -54,7 +54,9 @@ const sendForm = async () => {
     loading.value = true;
 
     await auth.forgotPassword(emailAddress.value);
+
     store.setMessage("E-mail enviado com sucesso", "success");
+    showDialog.value = false;
   } catch (err: any) {
     store.setMessage(
       err.response?.data?.message ??

@@ -21,6 +21,7 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     'Despesas': RouteRecordInfo<'Despesas', '/expenses', Record<never, never>, Record<never, never>>,
     'Início': RouteRecordInfo<'Início', '/home', Record<never, never>, Record<never, never>>,
+    '/password-reset.[token]': RouteRecordInfo<'/password-reset.[token]', '/password-reset/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
     '/signin': RouteRecordInfo<'/signin', '/signin', Record<never, never>, Record<never, never>>,
     '/signup': RouteRecordInfo<'/signup', '/signup', Record<never, never>, Record<never, never>>,
   }
