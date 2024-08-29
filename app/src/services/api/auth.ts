@@ -17,4 +17,8 @@ export default {
   check: () => {
     return client.get("/api/auth-check");
   },
+
+  forgotPassword: (email: string) => {
+    return client.post("/auth/forgot-password", { email });
+  },
 };
