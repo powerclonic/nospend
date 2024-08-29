@@ -46,6 +46,17 @@
       >
         ENTRAR
       </v-btn>
+      <v-btn
+        class="text-decoration-underline"
+        color="secondary"
+        variant="text"
+        size="small"
+        block
+        :disabled="loading"
+      >
+        <forgot-password-form />
+        ESQUECI MINHA SENHA
+      </v-btn>
     </div>
   </v-form>
   <v-btn color="secondary" variant="text" to="/signup">

@@ -18,11 +18,14 @@ declare module 'vue' {
     ExpenseDetails: typeof import('./components/ExpenseDetails.vue')['default']
     ExpenseDetailsItem: typeof import('./components/ExpenseDetailsItem.vue')['default']
     ExpenseStat: typeof import('./components/ExpenseStat.vue')['default']
+    ForgotPasswordForm: typeof import('./components/ForgotPasswordForm.vue')['default']
     MonthPicker: typeof import('./components/MonthPicker.vue')['default']
     NewExpense: typeof import('./components/NewExpense.vue')['default']
+    PasswordResetForm: typeof import('./components/PasswordResetForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SignInForm: typeof import('./components/SignInForm.vue')['default']
     SignUpForm: typeof import('./components/SignUpForm.vue')['default']
+    'SignUpForm.1': typeof import('./components/SignUpForm.1.vue')['default']
   }
 }
