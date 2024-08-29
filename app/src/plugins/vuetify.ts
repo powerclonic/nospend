@@ -21,7 +21,7 @@ const nospendTheme = {
     warning: "#DE9F41",
     error: "#DE4141",
     info: "#41A5DE",
-    success: "#C6DE41",
+    // success: "#C6DE41",
   },
 };
 

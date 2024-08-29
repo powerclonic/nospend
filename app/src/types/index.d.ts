@@ -35,3 +35,5 @@ export interface SignUpData {
   password: string;
   password_confirmation: string;
 }
+
+export type MessageType = "error" | "success" | "warning" | "info";
