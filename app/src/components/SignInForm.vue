@@ -22,6 +22,13 @@
         :rules="[rules.required]"
         hide-details="auto"
       />
+      <v-checkbox
+        v-model="credentials.remember"
+        label="Lembrar de mim"
+        color="primary"
+        hide-details="true"
+        density="compact"
+      />
       <v-alert
         v-model="signInError"
         closable
@@ -77,6 +84,7 @@ const signInError = ref(false);
 const credentials: Ref<SignInData> = ref({
   email: "",
   password: "",
+  remember: false,
 });
 
 const rules = {
