@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Status;
 use App\Events\RecurrentExpenseProcessed;
 use App\Models\Expense;
 use Carbon\Carbon;
@@ -38,13 +39,15 @@ class ProcessRecurrentExpenses implements ShouldQueue
             ->get();
 
         $recurrentExpenses->each(function (Expense $item) {
-            $item->replicate()
+            $replicated = $item->replicate()
                 ->fill([
-                    'due_date' => $item->due_date->addMonth()
-                ])
-                ->save();
+                    'due_date' => $item->due_date->addMonth(),
+                    'status' => Status::AWAITING_PAYMENT
+                ]);
 
-            RecurrentExpenseProcessed::dispatch($item);
+            $replicated->save();
+
+            RecurrentExpenseProcessed::dispatch($replicated);
         });
     }
 }

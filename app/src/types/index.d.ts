@@ -27,6 +27,7 @@ export interface Dashboard {
 export interface SignInData {
   email: string;
   password: string;
+  remember: boolean;
 }
 
 export interface SignUpData {
