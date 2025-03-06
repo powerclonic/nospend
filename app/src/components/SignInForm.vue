@@ -26,7 +26,7 @@
         v-model="credentials.remember"
         label="Lembrar de mim"
         color="primary"
-        hide-details="true"
+        hide-details
         density="compact"
       />
       <v-alert
