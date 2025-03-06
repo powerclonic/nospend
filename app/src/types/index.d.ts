@@ -38,3 +38,9 @@ export interface SignUpData {
 }
 
 export type MessageType = "error" | "success" | "warning" | "info";
+
+export interface Hints {
+  category: Array<string>;
+  payment_method: Array<string>;
+  payment_source: Array<string>;
+}

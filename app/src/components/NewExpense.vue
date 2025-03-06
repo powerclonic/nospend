@@ -10,29 +10,31 @@
     </v-card>
   </v-dialog>
   <v-dialog v-model="showDialog" persistent :activator>
-    <v-form @submit.prevent="sendForm">
-      <v-card class="rounded-lg" color="background">
-        <template #title>
-          {{ update ? "ATUALIZAR" : "CRIAR" }} DESPESA
-        </template>
-        <template #append>
-          <v-btn icon variant="text" @click="showDialog = false">
-            <v-icon icon="mdi-close" />
-          </v-btn>
-        </template>
-        <template #text>
+    <v-card ref="formCardContainer" class="rounded-lg" color="background">
+      <template #title>
+        {{ update ? "ATUALIZAR" : "CRIAR" }} DESPESA
+      </template>
+      <template #append>
+        <v-btn icon variant="text" @click="showDialog = false">
+          <v-icon icon="mdi-close" />
+        </v-btn>
+      </template>
+      <template #text>
+        <v-form validate-on="submit" ref="newExpenseForm" @submit.prevent="sendForm">
           <v-text-field
             v-model="expenseInput.name"
             label="Nome da despesa"
             color="primary"
             type="text"
             placeholder="Conta X"
+            :rules="defaultRules"
           />
           <v-text-field
             v-model="expenseInput.due_date"
             label="Data de vcto./pgto."
             color="primary"
             type="date"
+            :rules="defaultRules"
           />
           <v-text-field
             v-model="formattedValue"
@@ -40,25 +42,36 @@
             color="primary"
             type="text"
             prefix="R$"
+            :rules="defaultRules"
           />
-          <v-text-field
+          <v-combobox
             v-model="expenseInput.payment_method"
+            :items="hintOptions.payment_method"
             label="Forma de pagamento"
             color="primary"
             hint="Opcional"
+            clearable
+            allow-new
             placeholder="Cartão Y"
           />
-          <v-text-field
+          <v-combobox
             v-model="expenseInput.payment_source"
+            :items="hintOptions.payment_source"
             label="Fonte de pagamento"
             color="primary"
             hint="Opcional"
+            clearable
+            allow-new
             placeholder="Banco Z"
           />
-          <v-text-field
+          <v-combobox
             v-model="expenseInput.category"
+            :items="hintOptions.category"
             label="Categoria"
-            color="primary"
+            color="primary" 
+            clearable
+            allow-new
+            placeholder="Adicionar nova categoria"
           />
           <v-switch
             v-model="expenseInput.recurrent"
@@ -72,23 +85,23 @@
             color="primary"
             hide-details
           />
-          <button class="d-none" ref="formButton" type="submit">w</button>
-        </template>
-        <template #actions>
-          <v-btn color="error" variant="text" @click="showDialog = false">
-            Cancelar
-          </v-btn>
-          <v-btn color="primary" variant="tonal" type="submit"> Salvar </v-btn>
-        </template>
-      </v-card>
-    </v-form>
+          <button class="d-none" ref="formButton" type="submit" />
+        </v-form>
+      </template>
+      <template #actions>
+        <v-btn color="error" variant="text" @click="showDialog = false">
+          Cancelar
+        </v-btn>
+        <v-btn color="primary" variant="tonal" type="submit" @click="formSubmitButton?.click()">  Salvar </v-btn>
+      </template>
+    </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
 import expenseApi from "@/services/api/expense";
-import { Expense } from "@/types";
-import { PropType } from "vue";
+import { Expense, Hints } from "@/types";
+import { PropType, useTemplateRef } from "vue";
 
 const props = defineProps({
   update: {
@@ -104,20 +117,27 @@ const props = defineProps({
   },
 });
 
+const defaultRules = [(v: string) => !!v || "Campo obrigatório"];
+
 const emits = defineEmits(["updated"]);
 
-const formButton = ref(null);
 
 const showDialog = ref(false);
 const loading = ref(false);
 
+const hintOptions: Ref<Hints> = ref({} as Hints);
+  
+const formCardContainer = useTemplateRef("formCardContainer")
+const formSubmitButton = useTemplateRef("formButton");
+const newExpenseForm = useTemplateRef("newExpenseForm");
+
 const cleanInput = {
   name: "",
   value: 0,
-  payment_method: "",
-  payment_source: "",
+  payment_method: null,
+  payment_source: null,
   due_date: new Date().toISOString().split("T")[0],
-  category: "",
+  category: null,
   recurrent: false,
   auto_pay: false,
 };
@@ -150,7 +170,21 @@ const formattedValue = computed({
   },
 });
 
+const loadHints = async () => { 
+  let response = await expenseApi.hints();
+  hintOptions.value = response.data;
+}
+
 const sendForm = async () => {
+  let isFormValid = (await newExpenseForm.value?.validate());
+
+  if (!isFormValid?.valid) {
+    if (formCardContainer.value) {
+      formCardContainer.value.$el.scrollTop = 0;
+    }
+    return;
+  }
+
   try {
     loading.value = true;
     if (props.update) {
@@ -161,6 +195,8 @@ const sendForm = async () => {
     expenseInput.value = { ...cleanInput };
     showDialog.value = false;
 
+    loadHints();
+
     emits("updated");
   } catch (error) {
     console.error(error);
@@ -168,4 +204,6 @@ const sendForm = async () => {
     loading.value = false;
   }
 };
+
+loadHints();
 </script>
