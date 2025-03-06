@@ -101,7 +101,8 @@
 <script setup lang="ts">
 import expenseApi from "@/services/api/expense";
 import { Expense, Hints } from "@/types";
-import { PropType, useTemplateRef } from "vue";
+import { PropType, ShallowRef, useTemplateRef } from "vue";
+import { VCard, VForm } from "vuetify/components";
 
 const props = defineProps({
   update: {
@@ -127,9 +128,9 @@ const loading = ref(false);
 
 const hintOptions: Ref<Hints> = ref({} as Hints);
   
-const formCardContainer = useTemplateRef("formCardContainer")
-const formSubmitButton = useTemplateRef("formButton");
-const newExpenseForm = useTemplateRef("newExpenseForm");
+const formCardContainer: Readonly<ShallowRef<VCard>> = useTemplateRef("formCardContainer")! as Readonly<ShallowRef<VCard>>;
+const formSubmitButton: Readonly<ShallowRef<HTMLButtonElement>> = useTemplateRef("formButton")! as Readonly<ShallowRef<HTMLButtonElement>>;
+const newExpenseForm: Readonly<ShallowRef<VForm>> = useTemplateRef("newExpenseForm")! as Readonly<ShallowRef<VForm>>;
 
 const cleanInput = {
   name: "",
