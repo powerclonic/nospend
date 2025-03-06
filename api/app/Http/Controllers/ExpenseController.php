@@ -10,6 +10,7 @@ use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
@@ -19,8 +20,6 @@ class ExpenseController extends Controller
      */
     public function index(ListRequest $request)
     {
-        info($request->user());
-
         if ($request->validated()) {
             return ExpenseResource::collection(
                 $request->user()->expensesMonth(...$request->validated())->get()
@@ -38,6 +37,8 @@ class ExpenseController extends Controller
     public function store(StoreRequest $request)
     {
         $request->user()->expenses()->create($request->validated());
+
+        Cache::forget('expense_details_' . $request->user()->id);
 
         return response(__('app.expense.created'), 201);
     }

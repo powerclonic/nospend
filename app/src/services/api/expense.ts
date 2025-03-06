@@ -17,4 +17,7 @@ export default {
       _method: "PUT",
     });
   },
+  hints: () => {
+    return client.get("/api/expenses/details");
+  }
 };
