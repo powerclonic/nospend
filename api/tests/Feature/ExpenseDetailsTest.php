@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Expense;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\Sanctum;
@@ -10,12 +11,8 @@ use Tests\TestCase;
 
 class ExpenseDetailsTest extends TestCase
 {
-
     use RefreshDatabase;
 
-    /**
-     * A basic feature test example.
-     */
     public function test_user_can_view_expense_details(): void
     {
         Sanctum::actingAs(
@@ -88,5 +85,40 @@ class ExpenseDetailsTest extends TestCase
                 'payment_source' => ['Bank'],
                 'payment_method' => ['Credit Card'],
             ]);
+    }
+
+    public function test_cache_is_refreshed_when_expense_is_edited(): void
+    {
+        $user = User::factory()
+            ->hasExpenses(1, [
+                'category' => 'Food',
+                'payment_source' => 'Bank',
+                'payment_method' => 'Credit Card',
+                'due_date' => today()->subDay()
+            ])
+            ->create();
+
+        Sanctum::actingAs($user);
+
+        $expense = $user->expenses->first();
+
+        // Ensure the cache is set initially
+        $this->getJson('/api/expenses/details');
+        $this->assertTrue(Cache::has('expense_details_' . $user->id));
+
+        // Update the expense
+        $this->putJson('/api/expenses/' . $expense->id, [
+            'category' => 'Transport',
+            'payment_source' => 'Cash',
+            'payment_method' => 'Debit Card',
+            'due_date' => today()->addDay()
+        ]);
+
+        // Ensure the cache is refreshed
+        $this->assertFalse(Cache::has('expense_details_' . $user->id));
+
+        // Fetch the details again to set the cache
+        $this->getJson('/api/expenses/details');
+        $this->assertTrue(Cache::has('expense_details_' . $user->id));
     }
 }

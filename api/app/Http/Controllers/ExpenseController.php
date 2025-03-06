@@ -62,6 +62,8 @@ class ExpenseController extends Controller
 
         $expense->update($request->validated());
 
+        Cache::forget('expense_details_' . $request->user()->id);
+
         return response(__('app.expense.updated'), 200);
     }
 
