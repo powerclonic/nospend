@@ -2,7 +2,9 @@ name: Application
 
 on:
   push:
-    branches: ["main"]
+    branches: 
+      - "main"
+      - "develop"
 
 jobs:
   deploy:
@@ -12,39 +14,38 @@ jobs:
       - name: Repository checkout
         uses: actions/checkout@v4
 
+      - name: Set target directory
+        id: set-target-dir
+        run: echo "target_dir=${{ github.ref == 'refs/heads/main' && secrets.PROD_TARGET_DIR || secrets.DEV_TARGET_DIR }}" >> $GITHUB_ENV
+
       - name: Copy files to host
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          password: ${{ secrets.REMOTE_PASS }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ${{ vars.SOURCE_DIR }}
-          target: ${{ secrets.TARGET_DIR }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "."
+          target: ${{ env.target_dir }}
 
       - name: Update the Frontend
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          password: ${{ secrets.REMOTE_PASS }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ${{ secrets.TARGET_DIR }}/app
-            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.app .env.local
+            cd ${{ env.target_dir }}/app
             npm install
             npm run build
 
       - name: Update the Backend
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.2
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          password: ${{ secrets.REMOTE_PASS }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ${{ secrets.TARGET_DIR }}/api
-            cp ${{ secrets.ENVIRONMENT_DIR }}/.env.api .env
+            cd ${{ env.target_dir }}/api
             composer install
             php artisan key:generate
             supervisorctl restart "nospend-worker:*"
