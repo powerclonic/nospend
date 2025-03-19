@@ -25,6 +25,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            mkdir -p ${{ env.target_dir }}
             cd ${{ env.target_dir }}
             if [ ! -d ".git" ]; then
               git clone --branch ${{ github.ref_name }} https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} .
