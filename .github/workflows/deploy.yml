@@ -18,14 +18,21 @@ jobs:
         id: set-target-dir
         run: echo "target_dir=${{ github.ref == 'refs/heads/main' && secrets.PROD_TARGET_DIR || secrets.DEV_TARGET_DIR }}" >> $GITHUB_ENV
 
-      - name: Copy files to host
-        uses: appleboy/scp-action@v0.1.7
+      - name: Update files on host
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "."
-          target: ${{ env.target_dir }}
+          script: |
+            cd ${{ env.target_dir }}
+            if [ ! -d ".git" ]; then
+              git clone --branch ${{ github.ref_name }} https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} .
+            else
+              git reset --hard
+              git clean -fd
+              git pull origin ${{ github.ref_name }}
+            fi
 
       - name: Update the Frontend
         uses: appleboy/ssh-action@v1.0.3
