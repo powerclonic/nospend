@@ -7,9 +7,6 @@
     <template #subtitle>
       <span class="font-weight-bold">{{ maskedValue }}</span>
     </template>
-    <template #append>
-      <v-icon icon="mdi-credit-card" color="primary" />
-    </template>
     <template #text v-if="detailed">
       <span class="d-flex flex-wrap ga-2">
         <v-chip prepend-icon="mdi-circle" :color="status.color">
