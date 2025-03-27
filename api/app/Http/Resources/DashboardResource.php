@@ -25,8 +25,16 @@ class DashboardResource extends JsonResource
                 'expenses_total_value' => $expensesMonth->sum('value'),
                 'expenses_total_paid' => $expensesMonth->where('status', Status::PAID)->sum('value'),
                 'expenses_total_unpaid' => $expensesMonth->where('status', '!=', Status::PAID)->sum('value'),
-                'expenses_total_not_recurrent' => $expensesMonth->where('recurrent', false)->sum('value')
-            ]
+                'expenses_total_not_recurrent' => $expensesMonth->where('recurrent', false)->sum('value'),
+                'expenses_total_recurrent' => $expensesMonth->where('recurrent', true)->sum('value'),
+            ],
+            'expenses_by_category' => $expensesMonth->groupBy('category')->map(function ($expenses, $category) {
+                info($category);
+                return [
+                    'category' => $category ?: __('app.expense.no_category'),
+                    'total_value' => $expenses->sum('value'),
+                ];
+            })->values(),
         ];
     }
 }

@@ -12,6 +12,11 @@ export interface Expense {
   category?: string;
 }
 
+export interface CategoryStatistic {
+  category: string,
+  total_value: number
+}
+
 export interface Dashboard {
   name: string;
   today_expenses: Array<Expense>;
@@ -21,8 +26,11 @@ export interface Dashboard {
     expenses_total_paid: number;
     expenses_total_unpaid: number;
     expenses_total_not_recurrent: number;
+    expenses_total_recurrent: number;
   };
+  expenses_by_category: Array<CategoryStatistic>
 }
+
 
 export interface SignInData {
   email: string;
