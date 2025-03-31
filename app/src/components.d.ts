@@ -14,6 +14,7 @@ declare module 'vue' {
     AppLoading: typeof import('./components/AppLoading.vue')['default']
     AppWelcome: typeof import('./components/AppWelcome.vue')['default']
     CardButton: typeof import('./components/CardButton.vue')['default']
+    DoughnutChart: typeof import('./components/DoughnutChart.vue')['default']
     ExpenseCard: typeof import('./components/ExpenseCard.vue')['default']
     ExpenseDetails: typeof import('./components/ExpenseDetails.vue')['default']
     ExpenseDetailsItem: typeof import('./components/ExpenseDetailsItem.vue')['default']

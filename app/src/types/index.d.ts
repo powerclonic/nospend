@@ -12,9 +12,10 @@ export interface Expense {
   category?: string;
 }
 
-export interface CategoryStatistic {
-  category: string,
-  total_value: number
+export interface NamedStatistic<T extends string = string> {
+  [key: string]: string; // Allow dynamic keys
+  [K in T]: string; // Enforce the dynamic property name
+  total_value: number; // Explicitly include total_value
 }
 
 export interface Dashboard {
@@ -28,7 +29,9 @@ export interface Dashboard {
     expenses_total_not_recurrent: number;
     expenses_total_recurrent: number;
   };
-  expenses_by_category: Array<CategoryStatistic>
+  expenses_by_category: Array<NamedStatistic<'category'>>,
+  expenses_by_payment_source: Array<NamedStatistic<'payment_source'>>,
+  expenses_by_payment_method: Array<NamedStatistic<'payment_method'>>,
 }
 
 

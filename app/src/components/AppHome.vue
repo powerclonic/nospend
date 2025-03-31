@@ -62,44 +62,14 @@
       </template>
       <template #text>
         <div class="d-flex flex-column ga-2">
-          <v-card v-if="total_recurrent && total_not_recurrent" color="background">
-            <template #title>
-              Recorrência
-            </template>
-            <template #subtitle>
-                Recorrentes vs Não Recorrentes
-            </template>
-            <template #append>
-              <v-icon icon="mdi-repeat" color="primary" />
-            </template>
-            <template #text>
-              <doughnut :data="recurrencyChartData" />
-            </template>
-          </v-card>
-          <v-card v-else title="Sem despesas" subtitle="Não há dados para mostrar" color="background">
-            <template #append>
-              <v-icon icon="mdi-currency-usd-off" color="primary" />
-            </template>
-          </v-card>
-          <v-card v-if="total_recurrent && total_not_recurrent" color="background">
-            <template #title>
-              Categorias
-            </template>
-            <template #subtitle>
-                Valor total por categoria
-            </template>
-            <template #append>
-              <v-icon icon="mdi-tag" color="primary" />
-            </template>
-            <template #text>
-              <doughnut :data="categoryChartData" />
-            </template>
-          </v-card>
-          <v-card v-else title="Sem despesas" subtitle="Não há dados para mostrar" color="background">
-            <template #append>
-              <v-icon icon="mdi-currency-usd-off" color="primary" />
-            </template>
-          </v-card>
+          <doughnut-chart :chartData="recurrencyChartData" title="Recorrência" subtitle="Valor total de despesas"
+            icon="mdi-repeat" />
+          <doughnut-chart title="Categorias" subtitle="Valor total por categoria" :chart-data="categoryChartData"
+            icon="mdi-tag" />
+          <doughnut-chart title="Forma" subtitle="Valor total por forma de pagamento" :chart-data="paymentMethodChartData"
+            icon="mdi-cash" />
+          <doughnut-chart title="Fonte" subtitle="Valor total por fonte de pagamento" :chart-data="paymnentSourceChartData"
+            icon="mdi-bank" />
         </div>
       </template>
     </v-card>
@@ -107,23 +77,10 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-  ChartData
-} from 'chart.js'
-
-import { Doughnut } from 'vue-chartjs'
-
-ChartJS.register(CategoryScale, LinearScale, ArcElement, Title, Tooltip, Legend)
-
 import user from "@/services/api/user";
+
 import type { Dashboard } from "@/types";
+import type { ChartData } from "chart.js";
 
 const loading = ref(false);
 const data: Ref<Dashboard | null> = ref(null);
@@ -156,27 +113,8 @@ const greeting = computed(() => {
   return "Boa noite";
 });
 
-const total_recurrent = computed(() => {
-  if (data.value) {
-    return data.value.month_statistics.expenses_total_value - data.value.month_statistics.expenses_total_not_recurrent
-  }
 
-  return 0
-})
-
-const total_not_recurrent = computed(() => {
-  if (data.value) {
-    return data.value.month_statistics.expenses_total_not_recurrent
-  }
-
-  return 0
-})
-
-ChartJS.overrides['doughnut'].plugins.legend.labels.color = '#FFFFFF'
-ChartJS.overrides['doughnut'].plugins.legend.labels.boxWidth = 12
-ChartJS.overrides['doughnut'].plugins.legend.labels.boxHeight = 12
-
-const recurrencyChartData: ComputedRef<ChartData<"doughnut", number[], unknown>>= computed(() => {
+const recurrencyChartData: ComputedRef<ChartData<"doughnut", number[], unknown>> = computed(() => {
   return {
     labels: [
       'Recorrente',
@@ -184,8 +122,8 @@ const recurrencyChartData: ComputedRef<ChartData<"doughnut", number[], unknown>>
     ],
     datasets: [{
       data: [
-        total_recurrent.value,
-        total_not_recurrent.value
+        data.value?.month_statistics.expenses_total_recurrent || 0,
+        data.value?.month_statistics.expenses_total_not_recurrent || 0,
       ],
       backgroundColor: [
         '#849c02',
@@ -197,25 +135,48 @@ const recurrencyChartData: ComputedRef<ChartData<"doughnut", number[], unknown>>
 });
 
 
-const categoryChartData: ComputedRef<ChartData<"doughnut", number[], unknown>>= computed(() => {
+const calculateBackgroundColor = (items: { total_value: number }[]) => {
+  const maxValue = Math.max(...items.map((item) => item.total_value));
+  return items.map((item) => {
+    const percentage = item.total_value / maxValue;
+    const baseColor = [198, 222, 65]; // RGB for #C6DE41
+    const darkenedColor = baseColor.map((c) => Math.floor(c * percentage)); // Darken based on percentage
+    return `rgb(${darkenedColor[0]}, ${darkenedColor[1]}, ${darkenedColor[2]})`;
+  });
+};
+
+const categoryChartData: ComputedRef<ChartData<"doughnut", number[], unknown>> = computed(() => {
   return {
     labels: data.value?.expenses_by_category.map((v) => v.category),
     datasets: [{
       data: data.value ? data.value.expenses_by_category.map((v) => v.total_value) : [],
-      backgroundColor: data.value ? data.value.expenses_by_category.map(() => {
-        const randomDarkColor = () => {
-          const r = Math.floor(Math.random() * 192); // Limit to darker tones
-          const g = Math.floor(Math.random() * 192);
-          const b = Math.floor(Math.random() * 192);
-          return `rgb(${r}, ${g}, ${b})`;
-        };
-        return randomDarkColor();
-      }) : [],
+      backgroundColor: data.value ? calculateBackgroundColor(data.value.expenses_by_category) : [],
       borderColor: '#153B44'
     }],
   }
 });
 
+const paymentMethodChartData = computed(() => {
+  return {
+    labels: data.value?.expenses_by_payment_method.map((v) => v.payment_method),
+    datasets: [{
+      data: data.value ? data.value.expenses_by_payment_method.map((v) => v.total_value) : [],
+      backgroundColor: data.value ? calculateBackgroundColor(data.value.expenses_by_payment_method) : [],
+      borderColor: '#153B44'
+    }],
+  }
+});
+
+const paymnentSourceChartData = computed(() => {
+  return {
+    labels: data.value?.expenses_by_payment_source.map((v) => v.payment_source),
+    datasets: [{
+      data: data.value ? data.value.expenses_by_payment_source.map((v) => v.total_value) : [],
+      backgroundColor: data.value ? calculateBackgroundColor(data.value.expenses_by_payment_source) : [],
+      borderColor: '#153B44'
+    }],
+  }
+});
 </script>
 
 <style scoped>
