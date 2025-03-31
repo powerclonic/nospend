@@ -7,6 +7,7 @@ return [
         'deleted' => 'Despesa deletada com sucesso',
         'paid' => 'A despesa :name foi paga',
         'replicated' => 'A despesa :name foi criada',
-        'expired' => 'A despesa :name venceu'
+        'expired' => 'A despesa :name venceu',
+        'no_category' => 'Sem categoria'
     ]
 ];

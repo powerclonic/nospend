@@ -25,8 +25,27 @@ class DashboardResource extends JsonResource
                 'expenses_total_value' => $expensesMonth->sum('value'),
                 'expenses_total_paid' => $expensesMonth->where('status', Status::PAID)->sum('value'),
                 'expenses_total_unpaid' => $expensesMonth->where('status', '!=', Status::PAID)->sum('value'),
-                'expenses_total_not_recurrent' => $expensesMonth->where('recurrent', false)->sum('value')
-            ]
+                'expenses_total_not_recurrent' => $expensesMonth->where('recurrent', false)->sum('value'),
+                'expenses_total_recurrent' => $expensesMonth->where('recurrent', true)->sum('value'),
+            ],
+            'expenses_by_category' => $expensesMonth->groupBy('category')->map(function ($expenses, $category) {
+                return [
+                    'category' => $category ?: __('app.expense.no_category'),
+                    'total_value' => $expenses->sum('value'),
+                ];
+            })->values(),
+            'expenses_by_payment_source' => $expensesMonth->groupBy('payment_source')->map(function ($expenses, $source) {
+                return [
+                    'payment_source' => $source ?: __('app.expense.no_payment_source'),
+                    'total_value' => $expenses->sum('value'),
+                ];
+            })->values(),
+            'expenses_by_payment_method' => $expensesMonth->groupBy('payment_method')->map(function ($expenses, $paymentMethod) {
+                return [
+                    'payment_method' => $paymentMethod ?: __('app.expense.no_payment_method'),
+                    'total_value' => $expenses->sum('value'),
+                ];
+            })->values(),
         ];
     }
 }
