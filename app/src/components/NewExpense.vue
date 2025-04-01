@@ -79,6 +79,24 @@
             color="primary"
             hide-details
           />
+          <v-container class="py-0">
+            <v-switch
+              v-if="expenseInput.recurrent"
+              v-model="recurrentFor"
+              label="Repetir este mês e mais..."
+              color="secondary"
+              hide-details
+            />
+            <v-number-input 
+              v-if="recurrentFor"
+              v-model="expenseInput.recurrent_for"
+              control-variant="default"
+              density="compact"
+              :min="1" 
+              :max="600"
+              :suffix="expenseInput.recurrent_for > 1 ? 'meses' : 'mês'"
+            />
+          </v-container>
           <v-switch
             v-model="expenseInput.auto_pay"
             label="Pagar automaticamente"
@@ -140,6 +158,7 @@ const cleanInput = {
   due_date: new Date().toISOString().split("T")[0],
   category: null,
   recurrent: false,
+  recurrent_for: 1,
   auto_pay: false,
 };
 
@@ -149,6 +168,7 @@ const getFormattedDatte = (date: string) => {
   return `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
 };
 
+const recurrentFor = ref(false);
 const expenseInput: Ref<any> = ref({ ...cleanInput });
 
 if (props.update) {
