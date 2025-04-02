@@ -81,14 +81,14 @@
           />
           <v-container class="py-0">
             <v-switch
-              v-if="expenseInput.recurrent"
+              :disabled="!expenseInput.recurrent"
               v-model="recurrentFor"
-              label="Repetir este mês e mais..."
+              label="Este mês e mais..."
               color="secondary"
               hide-details
             />
             <v-number-input 
-              v-if="recurrentFor"
+              :disabled="!recurrentFor"
               v-model="expenseInput.recurrent_for"
               control-variant="default"
               density="compact"
@@ -139,7 +139,6 @@ const props = defineProps({
 const defaultRules = [(v: string) => !!v || "Campo obrigatório"];
 
 const emits = defineEmits(["updated"]);
-
 
 const showDialog = ref(false);
 const loading = ref(false);
@@ -227,4 +226,11 @@ const sendForm = async () => {
 };
 
 loadHints();
+
+watch(expenseInput, (newVal) => {
+  if (!newVal.recurrent) {
+    recurrentFor.value = false;
+  }
+}, { deep: true });
+
 </script>
