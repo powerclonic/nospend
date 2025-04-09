@@ -1,23 +1,37 @@
 <template>
-    <v-card v-if="showChart" color="background">
-        <template #title>
-            {{ title }}
-        </template>
-        <template #subtitle>
-            {{ subtitle }}
-        </template>
-        <template #append>
-            <v-icon :icon color="primary" />
-        </template>
-        <template #text>
-            <doughnut :data="chartData" />
-        </template>
-    </v-card>
-    <v-card v-else :title subtitle="Não há dados para mostrar" color="background">
-        <template #append>
-            <v-icon icon="mdi-currency-usd-off" color="primary" />
-        </template>
-    </v-card>
+  <v-card
+    v-if="showChart"
+    color="background"
+  >
+    <template #title>
+      {{ title }}
+    </template>
+    <template #subtitle>
+      {{ subtitle }}
+    </template>
+    <template #append>
+      <v-icon
+        :icon
+        color="primary"
+      />
+    </template>
+    <template #text>
+      <doughnut :data="chartData" />
+    </template>
+  </v-card>
+  <v-card
+    v-else
+    :title
+    subtitle="Não há dados para mostrar"
+    color="background"
+  >
+    <template #append>
+      <v-icon
+        icon="mdi-currency-usd-off"
+        color="primary"
+      />
+    </template>
+  </v-card>
 </template>
 
 <script setup lang="ts">

@@ -21,8 +21,12 @@
       <template #text>
         <div class="d-flex flex-column ga-2">
           <expense-card v-for="(value, index) in data.today_expenses" :key="index" :expense="value" />
-          <v-card v-if="data.today_expenses.length <= 0" title="Tudo tranquilo"
-            subtitle="Nenhuma despesa para o dia de hoje" color="background">
+          <v-card
+            v-if="data.today_expenses.length <= 0"
+            title="Tudo tranquilo"
+            subtitle="Nenhuma despesa para o dia de hoje"
+            color="background"
+          >
             <template #append>
               <v-icon icon="mdi-check" color="primary" />
             </template>
@@ -43,14 +47,30 @@
       <template #text>
         <div class="d-flex flex-column ga-2">
           <expense-stat title="Nº de despesas" :value="data.month_statistics.expenses_quantity" icon="mdi-numeric" />
-          <expense-stat title="Total em despesas" :value="data.month_statistics.expenses_total_value" icon="mdi-wallet"
-            monetary />
-          <expense-stat title="Total já pago" :value="data.month_statistics.expenses_total_paid" icon="mdi-currency-usd"
-            monetary />
-          <expense-stat title="Total não pago" :value="data.month_statistics.expenses_total_unpaid"
-            icon="mdi-currency-usd-off" monetary />
-          <expense-stat title="Despesas não recorrentes" :value="data.month_statistics.expenses_total_not_recurrent"
-            icon="mdi-sync-alert" monetary />
+          <expense-stat
+            title="Total em despesas"
+            :value="data.month_statistics.expenses_total_value"
+            icon="mdi-wallet"
+            monetary
+          />
+          <expense-stat
+            title="Total já pago"
+            :value="data.month_statistics.expenses_total_paid"
+            icon="mdi-currency-usd"
+            monetary
+          />
+          <expense-stat
+            title="Total não pago"
+            :value="data.month_statistics.expenses_total_unpaid"
+            icon="mdi-currency-usd-off"
+            monetary
+          />
+          <expense-stat
+            title="Despesas não recorrentes"
+            :value="data.month_statistics.expenses_total_not_recurrent"
+            icon="mdi-sync-alert"
+            monetary
+          />
         </div>
       </template>
     </v-card>
@@ -62,14 +82,30 @@
       </template>
       <template #text>
         <div class="d-flex flex-column ga-2">
-          <doughnut-chart :chartData="recurrencyChartData" title="Recorrência" subtitle="Valor total de despesas"
-            icon="mdi-repeat" />
-          <doughnut-chart title="Categorias" subtitle="Valor total por categoria" :chart-data="categoryChartData"
-            icon="mdi-tag" />
-          <doughnut-chart title="Forma" subtitle="Valor total por forma de pagamento" :chart-data="paymentMethodChartData"
-            icon="mdi-cash" />
-          <doughnut-chart title="Fonte" subtitle="Valor total por fonte de pagamento" :chart-data="paymnentSourceChartData"
-            icon="mdi-bank" />
+          <doughnut-chart
+            :chartData="recurrencyChartData"
+            title="Recorrência"
+            subtitle="Valor total de despesas"
+            icon="mdi-repeat"
+          />
+          <doughnut-chart
+            title="Categorias"
+            subtitle="Valor total por categoria"
+            :chart-data="categoryChartData"
+            icon="mdi-tag"
+          />
+          <doughnut-chart
+            title="Forma"
+            subtitle="Valor total por forma de pagamento"
+            :chart-data="paymentMethodChartData"
+            icon="mdi-cash"
+          />
+          <doughnut-chart
+            title="Fonte"
+            subtitle="Valor total por fonte de pagamento"
+            :chart-data="paymnentSourceChartData"
+            icon="mdi-bank"
+          />
         </div>
       </template>
     </v-card>

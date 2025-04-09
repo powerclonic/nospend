@@ -50,7 +50,7 @@
         variant="tonal"
         :text="
           signupErrorMessage ??
-          'Estamos com problemas para completar seu cadastro, tente novamente mais tarde'
+            'Estamos com problemas para completar seu cadastro, tente novamente mais tarde'
         "
       />
       <v-btn
