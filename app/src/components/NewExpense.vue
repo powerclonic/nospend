@@ -1,29 +1,49 @@
 <template>
-  <v-dialog :model-value="loading" persistent>
+  <v-dialog
+    :model-value="loading"
+    persistent
+  >
     <v-card color="accent">
-      <template #title
-        >{{ update ? "Atualizando" : "Criando" }} despesa</template
-      >
+      <template #title>{{ update ? "Atualizando" : "Criando" }} despesa</template>
       <template #append>
-        <v-progress-circular color="primary" indeterminate />
+        <v-progress-circular
+          color="primary"
+          indeterminate
+        />
       </template>
     </v-card>
   </v-dialog>
-  <v-dialog v-model="showDialog" persistent :activator>
-    <v-card ref="formCardContainer" class="rounded-lg" color="background">
+  <v-dialog
+    v-model="showDialog"
+    persistent
+    :activator
+  >
+    <v-card
+      ref="formCardContainer"
+      class="rounded-lg"
+      color="background"
+    >
       <template #title>
         {{ update ? "ATUALIZAR" : "CRIAR" }} DESPESA
       </template>
       <template #append>
-        <v-btn icon variant="text" @click="showDialog = false">
+        <v-btn
+          icon
+          variant="text"
+          @click="showDialog = false"
+        >
           <v-icon icon="mdi-close" />
         </v-btn>
       </template>
       <template #text>
-        <v-form validate-on="submit" ref="newExpenseForm" @submit.prevent="sendForm">
+        <v-form
+          validate-on="submit"
+          ref="newExpenseForm"
+          @submit.prevent="sendForm"
+        >
           <v-text-field
             v-model="expenseInput.name"
-            label="Nome da despesa"
+            label="Nome da despesa"   
             color="primary"
             type="text"
             placeholder="Conta X"
@@ -68,59 +88,76 @@
             v-model="expenseInput.category"
             :items="hintOptions.category"
             label="Categoria"
-            color="primary" 
+            color="primary"
             clearable
             allow-new
             placeholder="Adicionar nova categoria"
           />
           <v-switch
+            :disabled="isRepeatEnabled"
             v-model="expenseInput.recurrent"
-            label="Recorrente"
+            label="Repetir indefinidamente"
             color="primary"
             hide-details
           />
-          <v-container class="py-0">
-            <v-switch
-              :disabled="!expenseInput.recurrent"
-              v-model="recurrentFor"
-              label="Este mês e mais..."
-              color="secondary"
-              hide-details
-            />
-            <v-number-input 
-              :disabled="!recurrentFor"
-              v-model="expenseInput.recurrent_for"
-              control-variant="default"
-              density="compact"
-              :min="1" 
-              :max="600"
-              :suffix="expenseInput.recurrent_for > 1 ? 'meses' : 'mês'"
-            />
-          </v-container>
+          <v-switch
+            v-model="isRepeatEnabled"
+            label="Repetir por..."
+            color="primary"
+            hide-details
+          />
+          <v-number-input
+            v-if="isRepeatEnabled"
+            v-model="expenseInput.repeat_for"
+            control-variant="default"
+            density="compact"
+            :min="1"
+            :max="600"
+            :suffix="(expenseInput.repeat_for || 0) > 1 ? 'meses' : 'mês'"
+            persistent-hint
+            :hint="repeatForHint"
+          />
           <v-switch
             v-model="expenseInput.auto_pay"
             label="Pagar automaticamente"
             color="primary"
             hide-details
           />
-          <button class="d-none" ref="formButton" type="submit" />
+          <button
+            class="d-none"
+            ref="formButton"
+            type="submit"
+          />
         </v-form>
       </template>
       <template #actions>
-        <v-btn color="error" variant="text" @click="showDialog = false">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="showDialog = false"
+        >
           Cancelar
         </v-btn>
-        <v-btn color="primary" variant="tonal" type="submit" @click="formSubmitButton?.click()">  Salvar </v-btn>
+        <v-btn
+          color="primary"
+          variant="tonal"
+          type="submit"
+          @click="formSubmitButton?.click()"
+        > Salvar </v-btn>
       </template>
     </v-card>
   </v-dialog>
 </template>
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import expenseApi from "@/services/api/expense";
-import { Expense, Hints } from "@/types";
+import { Expense, ExpenseInput, Hints } from "@/types";
 import { PropType, ShallowRef, useTemplateRef } from "vue";
 import { VCard, VForm } from "vuetify/components";
+import { addMonths } from "date-fns";
 
 const props = defineProps({
   update: {
@@ -144,20 +181,20 @@ const showDialog = ref(false);
 const loading = ref(false);
 
 const hintOptions: Ref<Hints> = ref({} as Hints);
-  
+
 const formCardContainer: Readonly<ShallowRef<VCard>> = useTemplateRef("formCardContainer")! as Readonly<ShallowRef<VCard>>;
 const formSubmitButton: Readonly<ShallowRef<HTMLButtonElement>> = useTemplateRef("formButton")! as Readonly<ShallowRef<HTMLButtonElement>>;
 const newExpenseForm: Readonly<ShallowRef<VForm>> = useTemplateRef("newExpenseForm")! as Readonly<ShallowRef<VForm>>;
 
-const cleanInput = {
+const cleanInput: ExpenseInput = {
   name: "",
   value: 0,
-  payment_method: null,
-  payment_source: null,
+  payment_method: undefined,
+  payment_source: undefined,
   due_date: new Date().toISOString().split("T")[0],
-  category: null,
+  category: undefined,
   recurrent: false,
-  recurrent_for: 1,
+  repeat_for: -1,
   auto_pay: false,
 };
 
@@ -167,16 +204,17 @@ const getFormattedDatte = (date: string) => {
   return `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
 };
 
-const recurrentFor = ref(false);
-const expenseInput: Ref<any> = ref({ ...cleanInput });
+const isRepeatEnabled = ref(false);
+const expenseInput: Ref<ExpenseInput> = ref({ ...cleanInput });
 
-if (props.update) {
+if (props.update && props.expense) {
   expenseInput.value = {
     ...expenseInput.value,
     ...props.expense,
-    due_date: getFormattedDatte(props.expense?.due_date as unknown as string),
+    due_date: getFormattedDatte(props.expense.due_date as unknown as string),
   };
   expenseInput.value.value *= 100;
+  isRepeatEnabled.value = props.expense.repeat_for > 0;
 }
 
 const formattedValue = computed({
@@ -190,7 +228,7 @@ const formattedValue = computed({
   },
 });
 
-const loadHints = async () => { 
+const loadHints = async () => {
   let response = await expenseApi.hints();
   hintOptions.value = response.data;
 }
@@ -207,8 +245,8 @@ const sendForm = async () => {
 
   try {
     loading.value = true;
-    if (props.update) {
-      await expenseApi.update(expenseInput.value);
+    if (props.update && props.expense) {
+      await expenseApi.update(expenseInput.value, props.expense.id);
     } else {
       await expenseApi.create(expenseInput.value);
     }
@@ -227,10 +265,27 @@ const sendForm = async () => {
 
 loadHints();
 
-watch(expenseInput, (newVal) => {
-  if (!newVal.recurrent) {
-    recurrentFor.value = false;
-  }
-}, { deep: true });
+const getFutureDate = (date: string, months: number) => {
+  return addMonths(
+    new Date(`${date}T00:00:00`),
+    months
+  );
+};
 
+watch(isRepeatEnabled, (newValue) => {
+  expenseInput.value.repeat_for = newValue ? 1 : -1;
+  expenseInput.value.recurrent = newValue;
+});
+
+const repeatForHint = computed(() => {
+  const repeatUntilDate = getFutureDate(
+    expenseInput.value.due_date,
+    expenseInput.value.repeat_for
+  );
+
+  return `Repetir até ${repeatUntilDate.toLocaleDateString('pt-BR', {
+    year: "numeric",
+    month: "long",
+  })}`;
+});
 </script>

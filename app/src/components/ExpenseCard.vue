@@ -16,7 +16,7 @@
           {{ expense.due_date }}
         </v-chip>
         <v-chip prepend-icon="mdi-repeat" color="secondary">
-          {{ expense.recurrent ? "Sim" : "Não" }}
+          {{ repeatText }}
         </v-chip>
         <v-chip
           v-show="expense.payment_method"
@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import type { Expense } from "@/types";
+import { addMonths } from "date-fns";
 import { PropType } from "vue";
 
 const props = defineProps({
@@ -77,4 +78,36 @@ const statusList = {
 };
 
 const status = computed(() => statusList[props.expense.status]);
+
+const getFutureDate = (date: string, months: number) => {
+  date = date.split("/").reverse().join("-");
+
+  return addMonths(
+    new Date(`${date}T00:00:00`),
+    months
+  );
+};
+
+const repeatText = computed(() => {
+  if (props.expense.recurrent) {
+    if (props.expense.repeat_for === -1) {
+      return "Mensal";
+    }
+
+    if (props.expense.repeat_for === 0) {
+      return "Este mês";
+    }
+
+    const futureDate = getFutureDate(
+      props.expense.due_date,
+      props.expense.repeat_for
+    );
+
+    const formattedDate = futureDate.toLocaleDateString("pt-BR", { year: "numeric", month: "long" });
+
+    return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+  }
+
+  return "Não";
+});
 </script>
