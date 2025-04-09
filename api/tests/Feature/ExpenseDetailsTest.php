@@ -25,8 +25,6 @@ class ExpenseDetailsTest extends TestCase
 
         $response = $this->getJson('/api/expenses/details');
 
-        $response->dump();
-
         $response->assertStatus(200);
     }
 

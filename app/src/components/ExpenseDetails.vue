@@ -1,28 +1,53 @@
 <template>
-  <v-dialog :model-value="loading" persistent>
+  <v-dialog
+    :model-value="loading"
+    persistent
+  >
     <v-card color="accent">
       <template #title>Aguarde...</template>
       <template #append>
-        <v-progress-circular color="primary" indeterminate />
+        <v-progress-circular
+          color="primary"
+          indeterminate
+        />
       </template>
     </v-card>
   </v-dialog>
-  <v-dialog v-model="showDialog" persistent activator="parent">
-    <v-card class="rounded-lg" color="background">
+  <v-dialog
+    v-model="showDialog"
+    activator="parent"
+  >
+    <v-card
+      class="rounded-lg"
+      color="background"
+    >
       <template #title> DETALHES DA DESPESA </template>
       <template #append>
-        <v-btn icon variant="text" @click="showDialog = false">
+        <v-btn
+          icon
+          variant="text"
+          @click="showDialog = false"
+        >
           <v-icon icon="mdi-close" />
         </v-btn>
       </template>
       <template #text>
-        <expense-details-item title="Despesa" :text="expense.name" />
-        <expense-details-item title="Valor" :text="maskedValue" />
+        <expense-details-item
+          title="Despesa"
+          :text="expense.name"
+        />
+        <expense-details-item
+          title="Valor"
+          :text="maskedValue"
+        />
         <expense-details-item
           title="Situação"
           :text="statusList[expense.status]"
         />
-        <expense-details-item title="Vcto./Pgto." :text="expense.due_date" />
+        <expense-details-item
+          title="Vcto./Pgto."
+          :text="expense.due_date"
+        />
         <expense-details-item
           title="Forma de pagamento"
           :text="expense.payment_method ?? 'Não informado'"
@@ -36,13 +61,22 @@
           :text="expense.created_at"
         />
         <div class="d-flex flex-wrap ga-2">
-          <v-chip size="large" prepend-icon="mdi-repeat">{{
-            expense.recurrent ? "Sim" : "Não"
+          <v-chip
+            size="large"
+            prepend-icon="mdi-repeat"
+          >{{
+            repeatText
           }}</v-chip>
-          <v-chip size="large" prepend-icon="mdi-cash-minus">{{
+          <v-chip
+            size="large"
+            prepend-icon="mdi-cash-minus"
+          >{{
             expense.auto_pay ? "Sim" : "Não"
           }}</v-chip>
-          <v-chip size="large" prepend-icon="mdi-tag">{{
+          <v-chip
+            size="large"
+            prepend-icon="mdi-tag"
+          >{{
             expense.category ?? "Nenhuma"
           }}</v-chip>
         </div>
@@ -76,15 +110,19 @@
       update
       :expense
       :activator="editButton"
-      @updated="$emit('updated')"
+      @updated="expenseUpdated"
     />
   </v-dialog>
 </template>
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import expenseApi from "@/services/api/expense";
 import { Expense } from "@/types";
 import { PropType } from "vue";
+import { addMonths } from 'date-fns';
 
 const props = defineProps({
   expense: {
@@ -144,9 +182,44 @@ const payExpense = async () => {
   }
 };
 
+const expenseUpdated = () => {
+  showDialog.value = false;
+  emits("updated");
+}
+
 watch(showDialog, (newValue) => {
   router.push(
     newValue ? { query: { expense: props.expense.id } } : { query: {} }
   );
+});
+
+const getFutureDate = (date: string, months: number) => {
+  date = date.split("/").reverse().join("-");
+
+  return addMonths(
+    new Date(`${date}T00:00:00`),
+    months
+  );
+};
+
+const repeatText = computed(() => {
+  if (props.expense.recurrent) {
+    if (props.expense.repeat_for === -1) {
+      return "Mensalmente";
+    }
+
+    if (props.expense.repeat_for === 0) {
+      return "Até este mês";
+    }
+
+    return `Até ${getFutureDate(
+      props.expense.due_date,
+      props.expense.repeat_for
+    ).toLocaleDateString("pt-BR", {
+      year: "numeric",
+      month: "long",
+    })}`;
+  }
+  return "Não repetir";
 });
 </script>

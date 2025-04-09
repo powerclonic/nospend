@@ -1,12 +1,12 @@
 import client from "@/services/api";
-import { Expense } from "@/types";
+import { Expense, ExpenseInput } from "@/types";
 
 export default {
-  create: (data: Expense) => {
+  create: (data: ExpenseInput) => {
     return client.post("/api/expenses", data);
   },
-  update: (data: Expense) => {
-    return client.post(`/api/expenses/${data.id}`, { ...data, _method: "PUT" });
+  update: (data: ExpenseInput, id: number) => {
+    return client.post(`/api/expenses/${id}`, { ...data, _method: "PUT" });
   },
   delete: (data: Expense) => {
     return client.post(`/api/expenses/${data.id}`, { _method: "DELETE" });

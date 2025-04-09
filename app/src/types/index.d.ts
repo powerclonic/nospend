@@ -7,14 +7,26 @@ export interface Expense {
   payment_method?: string;
   payment_source?: string;
   created_at: string;
-  recurrent: Boolean;
-  auto_pay: Boolean;
+  recurrent: boolean;
+  repeat_for: number;
+  auto_pay: boolean;
   category?: string;
 }
 
-export interface NamedStatistic<T extends string = string> {
+export interface ExpenseInput extends Omit<Expense, "id" | "status" | "created_at"> {
+  name: string;
+  value: number;
+  payment_method?: string;
+  payment_source?: string;
+  due_date: string;
+  category?: string;
+  recurrent: boolean;
+  repeat_until?: string;
+  auto_pay: boolean;
+}
+
+export interface NamedStatistic {
   [key: string]: string; // Allow dynamic keys
-  [K in T]: string; // Enforce the dynamic property name
   total_value: number; // Explicitly include total_value
 }
 
@@ -55,3 +67,4 @@ export interface Hints {
   payment_method: Array<string>;
   payment_source: Array<string>;
 }
+
