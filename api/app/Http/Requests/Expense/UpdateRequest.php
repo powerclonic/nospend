@@ -33,6 +33,9 @@ class UpdateRequest extends FormRequest
             'payment_source' => ['nullable', 'min:2', 'string:32'],
 
             'recurrent' => ['boolean'],
+            'repeat_for' => ['integer', 'min:-1', 'max:600'],
+
+
             'auto_pay' => ['boolean'],
         ];
     }

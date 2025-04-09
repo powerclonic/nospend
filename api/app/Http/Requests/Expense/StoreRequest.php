@@ -32,7 +32,7 @@ class StoreRequest extends FormRequest
             'payment_source' => ['sometimes', 'min:2', 'string:32', 'nullable'],
             
             'recurrent' => ['required', 'boolean'],
-            'recurrent_for' => ['sometimes', 'integer', 'min:1', 'nullable'],
+            'repeat_for' => ['required', 'integer', 'min:-1', 'max:600'],
             
             'auto_pay' => ['required', 'boolean'],
         ];

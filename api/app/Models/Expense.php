@@ -20,6 +20,7 @@ class Expense extends Model
         'payment_method',
         'payment_source',
         'recurrent',
+        'repeat_for',
         'auto_pay',
     ];
 

@@ -39,10 +39,17 @@ class ProcessRecurrentExpenses implements ShouldQueue
             ->get();
 
         $recurrentExpenses->each(function (Expense $item) {
+            if ($item->repeat_for == 0) {
+                return;
+            }
+
             $replicated = $item->replicate()
                 ->fill([
                     'due_date' => $item->due_date->addMonth(),
-                    'status' => Status::AWAITING_PAYMENT
+                    'status' => Status::AWAITING_PAYMENT,
+                    'repeat_for' => $item->repeat_for < 0 
+                        ? $item->repeat_for
+                        : $item->repeat_for - 1,
                 ]);
 
             $replicated->save();

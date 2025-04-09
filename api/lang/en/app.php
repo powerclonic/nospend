@@ -8,6 +8,8 @@ return [
         'paid' => 'The expense :name was paid',
         'replicated' => 'The expense :name was created',
         'expired' => 'The expense :name has expired',
-        'no_category' => 'No category'
+        'no_category' => 'No category',
+        'no_payment_method' => 'No payment method',
+        'no_payment_source' => 'No payment source',
     ],
 ];

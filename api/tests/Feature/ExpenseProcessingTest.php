@@ -62,6 +62,56 @@ class ExpenseProcessingTest extends TestCase
         $this->assertDatabaseCount('expenses', 2);
     }
 
+    public function test_expense_is_not_replicated_if_repeat_for_reaches_zero()
+    {
+        User::factory()
+            ->hasExpenses(1, [
+                'due_date' => Carbon::today(),
+                'recurrent' => true,
+                'repeat_for' => 0
+            ])
+            ->create();
+
+        ProcessRecurrentExpenses::dispatch();
+
+        $this->assertDatabaseCount('expenses', 1);
+
+        $this->travel(1)->month();
+
+        ProcessRecurrentExpenses::dispatch();
+
+        $this->assertDatabaseCount('expenses', 1);
+
+        $this->assertDatabaseHas('expenses', [
+            'repeat_for' => 0
+        ]);
+    }
+
+    public function test_expense_is_replicated_if_repeat_for_is_higher_than_0_and_decreases_repeat_for_values_by_one()
+    {
+        User::factory()
+            ->hasExpenses(1, [
+                'due_date' => Carbon::today(),
+                'recurrent' => true,
+                'repeat_for' => 2
+            ])
+            ->create();
+
+        ProcessRecurrentExpenses::dispatch();
+
+        $this->assertDatabaseCount('expenses', 1);
+
+        $this->travel(1)->month();
+
+        ProcessRecurrentExpenses::dispatch();
+
+        $this->assertDatabaseCount('expenses', 2);
+
+        $this->assertDatabaseHas('expenses', [
+            'repeat_for' => 1
+        ]);
+    }
+
     public function test_expense_status_changes_to_expired_after_due_date(): void
     {
         $user = User::factory()
